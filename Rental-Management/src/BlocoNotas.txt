@@ -1,0 +1,365 @@
+
+-------------------------------------
+Sistema de Gerenciamento de Aluguéis:
+-------------------------------------
+
+- Entidades: Contrato, Inquilino, Imóvel, Proprietário, Pagamento;
+- Interfaces: Repositórios (Todas as Entidades), Serviço de Cobrança(Pagamentos);
+- Heranças: Aluguel Residencial (Imóvel), Aluguel Comercial (Imóvel);
+
+- Enums: Ocupação, Tipo, EnumsExceptions (Todas as Entidades);
+- Repositórios: (Todas as Entidades);
+- Exceptions: (Todas as Entidades);
+- Services: (Todas as Entidades);
+
+----------------
+Sobre o assunto:
+----------------
+
+Gestão de Aluguéis
+  Essa é a base do sistema. Envolve o controle dos Contratos de locação, Datas de início e término, Valores dos aluguéis e reajustes. Também inclui o registro de informações sobre os Inquilinos e Proprietários.
+
+Controle Financeiro
+  Um bom sistema deve permitir o acompanhamento das finanças relacionadas aos Aluguéis. Isso inclui registrar os pagamentos dos Inquilinos, Calcular multas por atraso e Gerar relatórios financeiros.
+
+Site Imobiliário Integrado (Implementar, se possivel no proximo semestre)
+  Muitos sistemas oferecem a possibilidade de criar um site para divulgar os imóveis disponíveis para aluguel. Isso facilita a exposição das propriedades e a comunicação com potenciais inquilinos.
+
+-------------------
+Validação de Dados:
+-------------------
+
+- Verificar se os campos obrigatórios estão preenchidos corretamente (como nome, endereço, etc.).
+- Evitar duplicação de registros (por exemplo, dois contratos para o mesmo imóvel no mesmo período).
+
+CPF: FALTA
+- Não poder conter espaços em branco, letras, numeros double e float (Telefone segue a mesma regra!).
+
+Email: FALTA
+- Deve conter @gmail, @hotmail e @ru.
+
+Datas: FEITO
+- Transformar a String para Date (início e término de contratos, datas de pagamento).
+
+Inquilino: FEITO
+- Pode escolhe qual informação alterar após cadrastro (Proprietário segue a mesma regra!).
+
+Proprietário: FALTA
+- Pode ser um Inquilino (Implementar, se possivel depois!).
+
+Contrato: FEITO
+- Proprietários e inquilinos não podem ter o mesmo cpf.
+
+-----------------------------
+Mensagens do Enums Exceptions
+-----------------------------
+
+Todos os Enums Exceptions contem: 
+- Validos:
+  - Adicionado com sucesso 
+  - Removido com sucesso 
+  - Alterado com sucesso
+
+- Invalidos:
+  - Id invalido
+
+- Não registrados:
+  - Inválido
+  - Não Atualizado
+  - Não Registrado
+  - Propriedade Não Adicionada ao Inquilino
+  - Propriedade Não Adicionada ao Proprietário
+  - Inquilino Não Adicionado à Propriedade
+  - Proprietário Não Adicionado à Propriedade
+  - Proprietário e Inquilino Têm o Mesmo CPF
+
+Diferenças dos Exceptions:
+Inquilino:
+- Invalidos:
+  - Saldo Inválido
+  - Nome Inválido
+  - CPF Inválido
+  - Telefone Inválido
+  - Email Inválido
+
+Imovel:
+- Invalidos:
+  - Endereço inválido
+  - Valor de aluguel inválido
+  - Tipo inválido
+  - Ocupação inválida
+
+Proprietário: 
+- Invalidos:
+  - Nome Inválido
+  - CPF Inválido
+  - Telefone Inválido
+  - Email Inválido
+
+Contrato:
+- Invalidos:
+  - Data de início ou término inválida 
+  - Valor inválido
+
+----------
+Inovações:
+----------
+
+Notificações e Lembretes:
+  Implemente um sistema de notificações para lembrar os inquilinos e proprietários sobre datas importantes, como renovação de contrato, pagamentos pendentes ou reajustes de aluguel. Envie emails ou mensagens SMS automaticamente para evitar esquecimentos.
+
+Histórico e Auditoria:
+  Mantenha um histórico detalhado de todas as transações (contratos, pagamentos, alterações de dados). Isso pode ser útil para resolver disputas futuras ou para fins de auditoria.
+
+Relatórios Gerenciais:
+  Crie relatórios que ajudem os proprietários a entender o desempenho de seus imóveis (taxa de ocupação, receita, despesas).Relatórios financeiros, como fluxo de caixa e balanço, também são importantes.
+
+Integração com Meios de Pagamento:
+  Considere integrar seu sistema com serviços de pagamento online (como boletos bancários, cartões de crédito etc.). Isso facilitará a cobrança e o registro dos pagamentos.
+
+Segurança e Acesso:
+  Implemente níveis de acesso para diferentes usuários (administradores, proprietários, inquilinos). Proteja os dados sensíveis (como CPF e informações financeiras) com criptografia.
+
+Testes Automatizados:
+  Desenvolva testes automatizados para garantir que as funcionalidades estejam funcionando corretamente. Teste casos de uso comuns, como criação de contrato, registro de pagamento e atualização de dados.
+
+Escalabilidade:
+  Pense na escalabilidade do sistema. Se o número de imóveis e contratos aumentar, o sistema deve continuar funcionando sem problemas.
+
+Feedback dos Usuários:
+  Esteja aberto a receber feedback dos usuários (proprietários, inquilinos, administradores). Isso ajudará a melhorar continuamente o sistema e a adaptá-lo às necessidades reais.
+
+-------------------
+Classes Principais:
+-------------------
+
+Proprietário:
+- Atributos: id, nome, cpf, telefone, email, Imóvel
+- Métodos: adicionarImóvel(), removerImóvel()
+
+Imóvel:
+- Atributos: id, endereço, valorAluguel, tipo, ocupação, Proprietário, Inquilino
+- Métodos: calcularValorAluguel(), alterarStatus()
+
+Inquilino:
+- Atributos: id, nome, cpf, telefone, email, saldo, imovel
+- Métodos: atualizarDados(), verificarHistorico()
+
+Contrato:
+- Atributos: id, dataInicio, dataFim, valor, Proprietário, Imóvel, Inquilino
+- Métodos: calcularValorTotal(), renovarContrato()
+
+Pagamento:
+- Atributos: id, dataPagamento, valor, Contrato
+- Métodos: registrarPagamento(), verificarAtraso()
+
+----------------
+Relacionamentos:
+----------------
+
+- Proprietário pode ter nenhum ou vários Imóveis.
+  - Proprietário NÃO depende de imóvel.
+- Imóvel tem somente um Proprietário.
+  - Imóvel SIM depende de Proprietário.
+  - Lista de Imóveis pronta pode ser atribuída ao Proprietário.
+- Contrato associa um Imóvel a um Inquilino.
+  - Contrato pode remover Inquilino do Imóvel (gerando o fim do contrato).
+- Pagamento está relacionado a um Contrato.
+
+-----------
+Explicação: 
+-----------
+
+- Commercial e Residencial herdam de Imovel.
+- Pagamento vai estar relacionado com Contrato.
+- Contrato recebe as informações de Imovel, Inquilino e Proprietário.
+
+----------------
+Funcionalidades:
+----------------
+
+- Cadastrar Inquilinos e Proprietários.
+- Adicionar Inquilinos aos Imóveis (Cria Contratos), Imoveis aos Proprietários (Imovel depende de Proprietário).
+- Alterar Inquilinos, Imoveis, Proprietários e Contratos.
+- Remover Inquilinos, Imoveis, Proprietários e Contratos.
+- Lista Inquilinos, Imoveis, Proprietários e Contratos.
+
+----------
+Minimundo:
+----------
+
+Cenário - Sistema de Gerenciamento de Aluguel de Imóveis.
+
+Descrição: 
+  Uma imobiliária tem a proposta de gerenciar o aluguel de imóveis. O sistema dessa imobiliária deve permitir o cadastro de inquilinos, imóveis, proprietários, contratos de locação e os dados dos pagamentos. O usuário pode ser cadastrado tanto como proprietário como inquilino. O inquilino pode alugar um ou mais imóveis por um determinado período (Na verdade, o inquilino só pode alugar somente um imóvel. |Falta Implementar a nova regra!|), enquanto isso, o sistema deve calcular o valor total do aluguel, registrar os pagamentos mensais dos inquilinos, as devoluções, multas por atraso no pagamento (Caso ocorra, |Falta Implementar a nova regra!|) e informar o estado de cada imóvel. Cada imóvel tem um único proprietário e o proprietário é sempre associado a um imóvel especificamente, o que garante o registro de posse entre o imóvel e o proprietário (No caso,Imóvel SIM depende de Proprietário. O Imóvel é sempre associado a um Proprietário).
+
+Realidade do Problema:
+
+  - A pessoa pode se referir a proprietário ou inquilino, e pode ter mais de um número de telefone e residir em um endereço composto por Rua, número, bairro, cidade, estado e CEP (Na verdade, só pode ter somente 1 numero de telefone |Falta Implementar a nova regra!|).
+
+  - O imóvel sempre irá pertencer a um único proprietário, porém, ao longo do tempo, ele pode ser alugado por vários inquilinos diferentes (|Falta Implementar a nova regra!|).
+
+  - O contrato de locação é um documento estabelecido entre o inquilino e o imóvel por um tempo específico, com os valores e as condições do contrato pré definidas, incluindo possíveis multas por atraso no pagamento (|Falta Implementar a nova regra!|).
+
+  - O pagamento deve ser registrado a cada contrato que for firmado, contendo as informações como data de pagamento, valor a pagar, método de pagamento e se o pagamento está pendente ou já foi realizado (|Falta Implementar a nova regra!|).
+
+Os requisitos devem ser atendidos pela modelagem de dados:
+
+  - Pessoa: 
+    A entidade pessoa está interligada com as entidades inquilino e proprietário, pois, o usuário pode desempenhar um desses papéis. É cadastrada com nome, CPF, cargo, endereço e telefone (Imagino que essa classe não seja necessária!).
+
+  - Inquilino: 
+    Cada inquilino possui um código para identificação (ID), nome, CPF, telefone, email, saldo e Imovel. O inquilino pode alugar vários imóveis (O inquilino pode alugar somente um imóvel |Falta Implementar a nova regra!|).
+
+  - Proprietário: 
+    Cada Proprietário possui um código para identificação (ID). É cadastrado com nome, CPF, telefone email e uma lista de Imoveis. O proprietário pode ter vários imóveis cadastrados, mas pode apenas disponibilizar um por vez para locação.
+
+  - Imóvel: 
+    Cada imóvel possui um código para identificação (ID), endereço, tipo de imóvel (Apartamento, Casa, Imóvel Comercial. (|Falta Implementar a nova regra!|)), número de quartos (Numero de quartos, só é atribuído a herença de residencial), valor do aluguel e status do imóvel (se está disponível para locação, alugado (Basicamente se esta desocupado ou ocupado)). Um imóvel pode ser alugado por vários inquilinos, durante momentos diferentes.
+
+  - Contrato de Locação: 
+    O contrato é composto pela data de início, data de término, data de devolução do imóvel (|Falta Implementar a nova regra!|), valor total do aluguel, multa (Caso ocorra |Falta Implementar a nova regra!|), Proprietário, Imovel e Inquilino. O contrato é referido a um imóvel e um inquilino em específico.
+  
+  - Multa: 
+    Ela é calculada com base nos dias de atraso no pagamento do aluguel. Ela está relacionada com o contrato de locação (|Falta Implementar a nova regra!|).
+
+  - Pagamento: 
+    É composto por data, valor do pagamento, método de pagamento (Cartão de crédito, boleto, espécie *(Não é necessario)) e o status do pagamento (Pago ou pendente |Falta Implementar a nova regra!|). O pagamento se refere ao contrato de locação e é registrado mensalmente.
+
+Entidades:
+
+  1. Pessoa (Imagino que essa classe não seja necessária!)
+
+  -CPF (PK)
+  -Nome
+  -Cargo (Inquilino ou Proprietário)
+  -Endereço (Atributo composto: Rua, Número, Bairro, Cidade, Estado, CEP)
+  -Telefone (Atributo multivalorado)
+
+  2. Proprietário
+
+    - IdProprietário (PK)
+    - Nome
+    - CPF 
+    - Telefone (Atributo multivalorado)
+    - Email
+    - Imóvel (Atributo multivalorado)
+
+  3. Inquilino
+
+    - IdInquilino (PK)
+    - Nome 
+    - CPF
+    - Telefone (Atributo multivalorado)
+    - Email
+    - Saldo
+    - Imovel  (Atributo multivalorado)
+
+  4. Imóvel
+
+    - IdImóvel (PK)
+    - Endereço (Atributo composto: Rua, Número, Bairro, Cidade, Estado, CEP)
+    - Valor do Aluguel
+    - Tipo (Casa, apartamento ou comércio)
+    - Ocupação (Disponível, alugado)
+    - Proprietário (Atributo multivalorado)
+    - Inquilinos
+
+  5. Contrato de Locação
+
+    - IdContrato (PK)
+    - Data de Início
+    - Data de Término
+    - Data de Devolução do Imóvel
+    - Valor total do aluguel
+    - Multas (caso ocorra)
+    - Proprietário
+    - Inquilino
+    - Imovel
+
+  6. Pagamento
+
+    - IdPagamento (PK)
+    - Data de pagamento
+    - Valor a Pagar
+    - Método de Pagamento (Cartão de crédito, boleto, espécie (Não é necessario))
+    - Status (Pago ou pendente)
+    - IdContrato (FK herdada de Contrato de Locação)
+
+  Relacionamentos:
+
+  1:1 - Proprietário-Imóvel: 
+    O imóvel pode ter apenas um proprietário e o proprietário deve ter apenas um imóvel cadastrado em seu nome no sistema. Para cadastrar outro imóvel, ele deve desvincular o antigo (O Proprietário pode ter nenhum ou vários Imóveis, Imóvel pode ter somente um Proprietário).
+
+  1:N - Contrato-Inquilino: 
+    O inquilino pode ter vários contratos firmados com o tempo, mas, cada contrato se refere a apenas um inquilino (Inquilino pode ter nenhum ou somente um Contrato, Contrato tem somente um Inquilino).
+
+  N:N - Inquilino-Imóvel: 
+    O imóvel pode ser alugado por vários inquilinos ao longo do tempo e um inquilino pode ocupar vários imóveis, mas não simultaneamente (Somente um Inquilino pode alugar um Imóvel).
+
+------------------------
+Diagrama UML de Classes:
+------------------------
+
+                                 |----------------------------------------|
++----------------+       +----------------+       +----------------+      |
+|    Imóvel      |       |   Inquilino    |       |   Proprietário |      |
++----------------+       +----------------+       +----------------+      |
+|                |       |                |       |                |      |
++----------------+       +----------------+       +----------------+      |
+|                |       |                |       |                |      |
++----------------+       +----------------+       +----------------+      |
+|       |                        |                        |               |
+|       |                        |                        |               |
+|       |                        |                        |               |
+|       |------------------------|------------------------|               |
+|                                v                                        |
+|   +----------------+   +----------------+       +----------------+      |
+|-->|   Commercial   |   |    Contrato    |<------|    Pagamento   |<-----|
+|   +----------------+   +----------------+       +----------------+
+|   |                |   |                |       |                |
+|   +----------------+   +----------------+       +----------------+
+|   |                |   |                |       |                |
+|   +----------------+   +----------------+       +----------------+
+|
+|   +----------------+
+|-->|  Residential   |
+    +----------------+
+    |                |
+    +----------------+
+    |                |
+    +----------------+
+
++-----------------------------------+
+|            Sistema de             |
+|     Gerenciamento de Aluguéis     |
++-----------------------------------+
+| Entidades:                        |
+| - Contrato                        |
+| - Inquilino                       |
+| - Imóvel                          |
+| - Proprietário                    |
+| - Pagamento                       |
++-----------------------------------+
+| Interfaces:                       |
+| - Repositórios (Todas as Entidades)|
+| - Serviço de Cobrança (Pagamentos)|
++-----------------------------------+
+| Herança:                          |
+| - Aluguel Residencial (Imóvel)    |
+| - Aluguel Comercial (Imóvel)      |
++-----------------------------------+
+| Enums:                            |
+| - Ocupação                        |
+| - Tipo                            |
+| - EnumsExceptions (Todas as Entidades)|
++-----------------------------------+
+| Repositórios:                     |
+| - (Todas as Entidades)            |
++-----------------------------------+
+| Exceptions:                       |
+| - (Todas as Entidades)            |
++-----------------------------------+
+| Service:                          |
+| - (Todas as Entidades)            |
++-----------------------------------+
