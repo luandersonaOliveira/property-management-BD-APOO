@@ -7,7 +7,7 @@ import Enum.PropertyType;
 public class ResidentialProperty extends Property {
     // ATTRIBUTES
 
-    private int numberRooms;
+    private int numberOfRooms;
     private boolean ItHasALeisureArea;
 
     // CONSTRUCTOR
@@ -20,12 +20,12 @@ public class ResidentialProperty extends Property {
 
     // METODOS ESPECIAS
 
-    public int getNumberRooms() {
-        return numberRooms;
+    public int getnumberOfRooms() {
+        return numberOfRooms;
     }
 
-    public void setNumberRooms(int numberRooms) {
-        this.numberRooms = numberRooms;
+    public void setnumberOfRooms(int numberOfRooms) {
+        this.numberOfRooms = numberOfRooms;
     }
 
     public boolean isItHasALeisureArea() {

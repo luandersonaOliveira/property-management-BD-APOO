@@ -178,11 +178,37 @@ Explicação:
 Funcionalidades:
 ----------------
 
-- Cadastrar Inquilinos e Proprietários.
-- Adicionar Inquilinos aos Imóveis (Cria Contratos), Imoveis aos Proprietários (Imovel depende de Proprietário).
-- Alterar Inquilinos, Imoveis, Proprietários e Contratos.
-- Remover Inquilinos, Imoveis, Proprietários e Contratos.
-- Lista Inquilinos, Imoveis, Proprietários e Contratos.
+- Cadastrar / Adicionar:
+  - Cadastrar Inquilinos.
+  - Cadastrar Proprietários.
+  - Adicionar Imoveis aos Proprietários (Criar Imoveis).
+  - Adicionar Inquilinos aos Imóveis (Criar Contratos).
+  - Adicionar Pagamentos de Contrato.
+  - Adicionar Multas aos Inquilinos.
+
+- Alterações:
+  - Alterar Inquilinos.
+  - Alterar Imoveis.
+  - Alterar Proprietários.
+  - Alterar Contratos.
+  - Alterar Pagamentos.
+  - Alterar Multas.
+
+- Remoções:
+  - Remover Inquilinos.
+  - Remover Imoveis.
+  - Remover Proprietários.
+  - Remover Contratos.
+  - Remover Pagamentos.
+  - Remover Multas.
+
+- Listas:
+  - Listar Inquilinos.
+  - Listar Imoveis.
+  - Listar Proprietários.
+  - Listar Contratos.
+  - Listar Pagamentos.
+  - Listar Multas.
 
 ----------
 Minimundo:
@@ -206,7 +232,7 @@ Realidade do Problema:
 Os requisitos devem ser atendidos pela modelagem de dados:
 
   - Pessoa: 
-    A entidade pessoa está interligada com as entidades inquilino e proprietário, pois, o usuário pode desempenhar um desses papéis. É cadastrada com nome, CPF, cargo, endereço e telefone (Imagino que essa classe não seja necessária!).
+    A entidade pessoa está interligada com as entidades inquilino e proprietário, pois, o usuário pode desempenhar um desses papéis. É cadastrada com nome, CPF, cargo, endereço e telefone.
 
   - Inquilino: 
     Cada inquilino possui um código para identificação (ID), nome, CPF, telefone, email, saldo e Imovel. O inquilino pode alugar vários imóveis (O inquilino pode alugar somente um imóvel |Falta Implementar a nova regra!|).
@@ -228,42 +254,48 @@ Os requisitos devem ser atendidos pela modelagem de dados:
 
 Entidades:
 
-  1. Pessoa (Imagino que essa classe não seja necessária!)
+  1. Pessoa
 
-  -CPF (PK)
-  -Nome
-  -Cargo (Inquilino ou Proprietário)
-  -Endereço (Atributo composto: Rua, Número, Bairro, Cidade, Estado, CEP)
-  -Telefone (Atributo multivalorado)
-
-  2. Proprietário
-
-    - IdProprietário (PK)
     - Nome
-    - CPF 
+    - CPF (PK)
     - Telefone (Atributo multivalorado)
     - Email
-    - Imóvel (Atributo multivalorado)
+    - Cargo (Inquilino ou Proprietário)
 
-  3. Inquilino
+  2. Proprietário (Subentidade derivada de Pessoa)
 
-    - IdInquilino (PK)
+    - Nome
+    - CPF (FK herdada de Pessoa)
+    - Telefone (Atributo multivalorado)
+    - Email
+    - Imóvel (Atributo multivalorado, composto pelo endereço do imóvel: Cidade, Estado, Rua, Bairro, Número, CEP, e pelo status)
+
+  3. Inquilino (Subentidade derivada de Pessoa)
+
     - Nome 
-    - CPF
+    - CPF (FK herdade de Pessoa)
     - Telefone (Atributo multivalorado)
     - Email
     - Saldo
-    - Imovel  (Atributo multivalorado)
+    - Imóvel
 
   4. Imóvel
 
     - IdImóvel (PK)
     - Endereço (Atributo composto: Rua, Número, Bairro, Cidade, Estado, CEP)
     - Valor do Aluguel
-    - Tipo (Casa, apartamento ou comércio)
+    - Tipo (Casa, Apartamento ou Comércio)
     - Ocupação (Disponível, alugado)
-    - Proprietário (Atributo multivalorado)
+    - Proprietário
     - Inquilinos
+
+    4.1 Imovel Residencial
+      - Número de quartos
+      - Possui Área de Lazer
+
+    4.2 Imovel Comercial
+      - Número de quartos
+      - Tipo de Comércio
 
   5. Contrato de Locação
 
@@ -272,7 +304,7 @@ Entidades:
     - Data de Término
     - Data de Devolução do Imóvel
     - Valor total do aluguel
-    - Multas (caso ocorra)
+    - Multas (Caso Ocorra)
     - Proprietário
     - Inquilino
     - Imovel
@@ -280,11 +312,14 @@ Entidades:
   6. Pagamento
 
     - IdPagamento (PK)
-    - Data de pagamento
+    - Data de Pagamento
     - Valor a Pagar
     - Método de Pagamento (Cartão de crédito, boleto, espécie (Não é necessario))
-    - Status (Pago ou pendente)
+    - Status (Pago ou Pendente)
     - IdContrato (FK herdada de Contrato de Locação)
+
+  7. Multa
+    - IdPagamento (FK herdada de Pagamento)
 
   Relacionamentos:
 
@@ -321,14 +356,14 @@ Diagrama UML de Classes:
 |   +----------------+   +----------------+       +----------------+
 |   |                |   |                |       |                |
 |   +----------------+   +----------------+       +----------------+
-|
-|   +----------------+
-|-->|  Residential   |
-    +----------------+
-    |                |
-    +----------------+
-    |                |
-    +----------------+
+|                                                         |
+|   +----------------+   +----------------+               |
+|-->|  Residential   |   |     Multa      |<--------------|
+    +----------------+   +----------------+
+    |                |   |                |
+    +----------------+   +----------------+
+    |                |   |                |
+    +----------------+   +----------------+
 
 +-----------------------------------+
 |            Sistema de             |
