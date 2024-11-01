@@ -1,33 +1,44 @@
-package entitys;
+package entity;
+// Inquilino
 
-import java.util.List;
-
-// Proprietário (Espefico de imovel)
-
-public class Landlord {
+public class Tenant {
 	// ATTRIBUTES
 
 	private int id;
+	private double balance;
 	private String name, cpf, telephone, email;
-	private List<Property> property;
+	private Property property;
 
 	// CONSTRUCTOR
-	
-	public Landlord(String name, String cpf, String telephone, String email) {
+
+	public Tenant(){
+		
+	}
+
+	public Tenant(String name, String cpf, String telephone, String email,double balance) {
 		this.name = name;
 		this.cpf = cpf;
 		this.telephone = telephone;
 		this.email = email;
+		this.balance = balance;
 	}
 
 	// METODOS ESPECIAS
-
+	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
 	}
 
 	public String getName() {
@@ -62,11 +73,11 @@ public class Landlord {
 		this.email = email;
 	}
 
-	public List<Property> getProperty() {
+	public Property getProperty() {
 		return property;
 	}
 
-	public void setProperty(List<Property> property) {
+	public void setProperty(Property property) {
 		this.property = property;
 	}
 }

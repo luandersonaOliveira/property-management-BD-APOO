@@ -1,10 +1,13 @@
-package views;
+package view;
 // MAIN
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Enum.EnumPropertyException;
+import Enum.PropertyOccupation;
+import Enum.PropertyType;
 import containers.LandlordRepository;
 import containers.LeaseRepository;
 import containers.PropertyRepository;
@@ -13,9 +16,6 @@ import entity.Landlord;
 import entity.Lease;
 import entity.Property;
 import entity.Tenant;
-import enums.EnumPropertyException;
-import enums.PropertyOccupation;
-import enums.PropertyType;
 import exceptions.LandlordException;
 import exceptions.LeaseException;
 import exceptions.PropertyException;
@@ -36,7 +36,7 @@ public class Main {
 
 	// NEWS SERVICES
 	private static PropertyService propertyService = new PropertyService(propertyRepository);
-	private static TenantService tenantService = new TenantService();
+	private static TenantService tenantService = new TenantService(tenantRepository);
 	private static LandlordService landlordService = new LandlordService(landlordRepository);
 	private static LeaseService leaseService = new LeaseService(leaseRepository);
 

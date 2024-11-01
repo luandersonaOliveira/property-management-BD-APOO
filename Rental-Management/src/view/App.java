@@ -1,4 +1,4 @@
-package views;
+package view;
 
 import dao.PropertyDAO;
 import entity.Tenant;
@@ -14,7 +14,7 @@ public class App {
 		tenant.setEmail("guru@gmail.com");
 		tenant.setBalance(9000);
 		
-		// propertyDAO.tenantSave(tenant);
+		propertyDAO.tenantSave(tenant);
 		
 		Tenant tenant1 = new Tenant();
 		tenant1.setName("Waka");
