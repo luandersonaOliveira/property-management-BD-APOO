@@ -1,0 +1,105 @@
+create database property_management_apoo;
+use property_management_apoo;
+
+CREATE TABLE `landlord` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `cpf` varchar(14) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpf_UNIQUE` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `lease` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `id_property` int NOT NULL,
+  `cpf_landlord` varchar(14) NOT NULL,
+  `cpf_tenant` varchar(14) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_property` (`id_property`),
+  KEY `cpf_landlord` (`cpf_landlord`),
+  KEY `cpf_tenant` (`cpf_tenant`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE lease
+add FOREIGN KEY (id_property) REFERENCES property (id),
+add FOREIGN KEY (cpf_landlord) REFERENCES landlord (cpf),
+add FOREIGN KEY (cpf_tenant) REFERENCES tenant (cpf);
+
+CREATE TABLE `property` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) NOT NULL,
+  `rental_value` double NOT NULL,
+  `type` enum('RESIDENTIAL','COMMERCIAL') NOT NULL,
+  `occupation` enum('UNOCCUPIED','OCCUPIED') NOT NULL,
+  `cpf_landlord` varchar(14) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cpf_landlord` (`cpf_landlord`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE property
+add FOREIGN KEY (cpf_landlord) REFERENCES landlord (cpf);
+
+CREATE TABLE `tenant` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `cpf` varchar(14) NOT NULL,
+  `telephone` varchar(20) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `balance` double NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpf_UNIQUE` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `tenant_lease` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_tenant` int NOT NULL,
+  `id_lease` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `id_tenant` (`id_tenant`),
+  KEY `id_lease` (`id_lease`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE tenant_lease
+add FOREIGN KEY (id_tenant) REFERENCES tenant (id),
+add FOREIGN KEY (id_lease) REFERENCES lease (id);
+
+
+use property_management_apoo;
+
+desc table landlord;
+describe table lease;
+describe table property;
+describe table tenant;
+
+select * from property_management_apoo.landlord;
+select * from property_management_apoo.lease;
+select * from property_management_apoo.property;
+select * from property_management_apoo.tenant;
+select * from property_management_apoo.tenant_lease;
+
+delete from property_management_apoo.landlord
+where id > '0';
+delete from property_management_apoo.lease
+where id > '0';
+delete from property_management_apoo.property
+where id > '0';
+delete from property_management_apoo.tenant
+where id > '0';
+delete from property_management_apoo.tenant_lease
+where id > '0';
+
+ALTER TABLE property_management_apoo.landlord AUTO_INCREMENT =1;
+ALTER TABLE property_management_apoo.lease AUTO_INCREMENT =1;
+ALTER TABLE property_management_apoo.property AUTO_INCREMENT =1;
+ALTER TABLE property_management_apoo.tenant AUTO_INCREMENT =1;
+ALTER TABLE property_management_apoo.tenant_lease AUTO_INCREMENT =1;
+
+select l.id, l.name, l.cpf, p.id, p.address, p.cpf_landlord  from landlord l
+join property p
+on l.id = p.id
+order by l.id;

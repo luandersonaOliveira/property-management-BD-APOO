@@ -1,8 +1,8 @@
-package Exceptions;
+package exceptions;
 // Inquilino Exception
 
 public class TenantException extends Exception {
-    public TenantException(String mensagem) {
-        super(mensagem);
-    }
+	public TenantException(String mensagem) {
+		super(mensagem);
+	}
 }
