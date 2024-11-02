@@ -1,18 +1,23 @@
 package Interface;
 // Interface Repositório de Proprietário
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
 
 import entity.Landlord;
 
 public interface ILandlordRepository {
-	public void addLandlord(Landlord landlord);
+	public void save(Landlord landlord);
 
-	public void removeLandlord(int id);
+	public void updateAll(Landlord landlord);
 
-	public void changeLandlord(int id);
+	public void updateName(Landlord landlord);
 
-	public ArrayList<Landlord> listLandlord();
+	public void updateTelephone(Landlord landlord);
 
-	public Landlord searchLandlord(int id);
+	public void updateEmail(Landlord landlord);
+
+	public void deleteByID(int id);
+
+	public List<Landlord> getLandlords() throws SQLException;
 }

@@ -1,12 +1,11 @@
 package services;
 // Serviço Proprietário
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 import Enum.EnumLandlordException;
 import containers.LandlordRepository;
-import dao.PropertyDAO;
 import entity.Landlord;
 import exceptions.LandlordException;
 
@@ -14,15 +13,7 @@ public class LandlordService {
 	// ATTRIBUTES
 
 	private static final Scanner scanner = new Scanner(System.in);
-	private LandlordRepository landlordRepository = new LandlordRepository();
-
-	// CONSTRUCTOR
-
-	public LandlordService(LandlordRepository landlordRepository) {
-		this.landlordRepository = landlordRepository;
-	}
-
-	// METHODS PERSONALIZED
+	private static final LandlordRepository landlordDAO = new LandlordRepository();
 
 	// CREATE
 	public void addLandlord(String name, String cpf, String telephone, String email) throws LandlordException {
@@ -34,9 +25,7 @@ public class LandlordService {
 
 		Landlord landlord = createLandlord(name, cpf, telephone, email);
 		if (landlord != null) {
-			landlordRepository.addLandlord(landlord);
-			new PropertyDAO().addLandlord(landlord);
-			System.out.println("\nProprietário adicionado com sucesso!");
+			landlordDAO.save(landlord);
 		} else {
 			throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalid);
 		}
@@ -94,47 +83,39 @@ public class LandlordService {
 
 	// REMOVE
 	public void removeLandlord(int id) {
-		if (landlordRepository.landlords.isEmpty()) {
-			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
-		} else {
-			landlordRepository.landlords.remove(id);
-			System.out.println("\nProprietário: " + id + ". Removido com sucesso!");
-		}
+		landlordDAO.deleteByID(id);
 	}
 
 	// LIST
-	public void listLandlord() {
-		ArrayList<Landlord> landlords = landlordRepository.listLandlord();
-		if (landlords.isEmpty()) {
+	public void listLandlord() throws SQLException {
+		if (landlordDAO.getLandlords().isEmpty()) {
 			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
 		} else {
-			for (int i = 0; i < landlords.size(); i++) {
-				Landlord l = landlords.get(i);
-				l.setId(i);
-				System.out.println("\n-------------------------------------------------------------------------------");
-				System.out.print("Proprietário: " + l.getId() + "\n");
+			for (Landlord l : landlordDAO.getLandlords()) {
+				System.out.print("\nID Proprietário: " + l.getId() + "\n");
 				System.out.print(" | Nome: " + l.getName());
 				System.out.print(" | CPF: " + l.getCpf());
 				System.out.print("\n | Telefone: " + l.getTelephone());
-				System.out.print(" | Email: " + l.getEmail() + " |");
-				System.out.println("\n-------------------------------------------------------------------------------");
+				System.out.print(" | Email: " + l.getEmail() + " |\n");
 			}
 		}
 	}
 
 	// CHANGE
-	public void changeLandlord(int id) throws LandlordException {
-		if (landlordRepository.landlords.isEmpty()) {
+	public void changeLandlord(int id) throws LandlordException, SQLException {
+		if (landlordDAO.getLandlords().isEmpty()) {
 			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
 		} else {
-			if (id < 0 || id >= landlordRepository.landlords.size()) {
-				System.out.println(("Erro: " + EnumLandlordException.LandlordInvalidIndex));
+			if (id <= 0 || id > landlordDAO.getLandlords().size()) {
+				throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalidIndex);
 			}
 
-			Landlord landlord = landlordRepository.landlords.get(id);
+			Landlord landlord = new Landlord();
+
 			System.out.println(
 					"\nQuais as novas informações do Proprietário deseja mudar? \n| 0.Nenhum | 1.Nome | 2.Telefone | 3.Email |");
 			System.out.print("\nOpção: ");
+
 			int option = scanner.nextInt();
 			scanner.nextLine();
 			switch (option) {
@@ -142,40 +123,29 @@ public class LandlordService {
 				System.out.print("Novo Nome: ");
 				String newName = scanner.nextLine();
 				landlord.setName(nameFormart(newName));
-				System.out.println("\nProprietário atualizado com sucesso!");
+				landlord.setId(id);
+				landlordDAO.updateName(landlord);
 				break;
 			case 2:
 				System.out.print("Novo Telefone: ");
 				String newTelephone = scanner.nextLine();
 				landlord.setTelephone(telephoneFormat(newTelephone));
-				System.out.println("\nProprietário atualizado com sucesso!");
+				landlord.setId(id);
+				landlordDAO.updateTelephone(landlord);
 				break;
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();
 				landlord.setEmail(newEmail);
-				System.out.println("\nProprietário atualizado com sucesso!");
+				landlord.setId(id);
+				landlordDAO.updateEmail(landlord);
 				break;
 			default:
-				option = 0;
 				System.out.println("\nProprietário não foi atualizado!");
+				option = 0;
 				break;
 			}
 		}
 	}
-
-	// Search
-	public void searchLandlord(int id) {
-		try {
-			Landlord landlord = landlordRepository.searchLandlord(id);
-			System.out.println(landlord.getName());
-			System.out.println(landlord.getId());
-			System.out.println(landlord.getCpf());
-			System.out.println(landlord.getCpf().length());
-			System.out.println(landlord.getTelephone());
-			System.out.println(landlord.getTelephone().length());
-		} catch (Exception e) {
-			System.err.println("Erro!!!");
-		}
-	}
+	
 }

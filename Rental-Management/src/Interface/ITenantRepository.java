@@ -1,18 +1,25 @@
 package Interface;
 // Interface Repositório de Inquilinos
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.util.List;
 
 import entity.Tenant;
 
 public interface ITenantRepository {
-	public void addTenant(Tenant tenant);
+	public void save(Tenant tenant);
 
-	public void removeTenant(int id);
+	public void updateAll(Tenant tenant);
 
-	public void changeTenant(int id);
+	public void updateName(Tenant tenant);
 
-	public ArrayList<Tenant> listTenant();
+	public void updateTelephone(Tenant tenant);
 
-	public Tenant searchTenant(int id);
+	public void updateEmail(Tenant tenant);
+
+	public void updateBalance(Tenant tenant);
+
+	public void deleteByID(int id);
+
+	public List<Tenant> getTenants() throws SQLException;
 }
