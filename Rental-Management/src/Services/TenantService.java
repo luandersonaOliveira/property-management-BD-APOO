@@ -4,6 +4,7 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Enum.EnumPropertyException;
 import Enum.EnumTenantException;
 import dao.PropertyDAO;
 import entity.Tenant;
@@ -14,9 +15,6 @@ public class TenantService {
 
 	private static final Scanner scanner = new Scanner(System.in);
 	private static final PropertyDAO propertyDAO = new PropertyDAO();
-	// CONSTRUCTOR
-
-	// METHODS PERSONALIZED
 
 	// CREATE
 	public void addTenant(String name, String cpf, String telephone, String email, double balance)
@@ -114,55 +112,73 @@ public class TenantService {
 
 	// LIST
 	public void listTenant() throws SQLException {
-		for (Tenant t : propertyDAO.getTenants()) {
-			System.out.println("\n-------------------------------------------------------------------------------");
-			System.out.print("Inquilino: " + t.getId() + "\n");
-			System.out.print(" | Nome: " + t.getName());
-			System.out.print(" | CPF: " + t.getCpf());
-			System.out.print("\n | Telefone: " + t.getTelephone());
-			System.out.print(" | Email: " + t.getEmail());
-			System.out.print(" | Saldo: " + t.getBalance() + " |");
-			System.out.println("\n-------------------------------------------------------------------------------");
+		if (propertyDAO.getTenants().isEmpty()) {
+			System.out.println(("Erro: " + EnumTenantException.TenantNoRegistered));
+		} else {
+			for (Tenant t : propertyDAO.getTenants()) {
+				System.out.println("\n-------------------------------------------------------------------------------");
+				System.out.print("ID Inquilino: " + t.getId() + "\n");
+				System.out.print(" | Nome: " + t.getName());
+				System.out.print(" | CPF: " + t.getCpf());
+				System.out.print("\n | Telefone: " + t.getTelephone());
+				System.out.print(" | Email: " + t.getEmail());
+				System.out.print(" | Saldo: " + t.getBalance() + " |");
+				System.out.println("\n-------------------------------------------------------------------------------");
+			}
 		}
 	}
 
 	// CHANGE
-	public void changeTenant(int id) throws TenantException {
-		System.out.println(
-				"\nQuais as novas informações do Inquilino deseja mudar? \n0.Nenhum | 1.Nome | 2.Telefone | 3.Email | 4.Saldo |");
-		System.out.print("\nOpção: ");
-		int option = scanner.nextInt();
-		scanner.nextLine();
-		Tenant tenant = new Tenant();
-		switch (option) {
-		case 1:
-			System.out.print("Novo Nome: ");
-			String newName = scanner.nextLine();
-			tenant.setName(nameFormart(newName));
-			propertyDAO.TenantUpdate(tenant);
-			break;
-		case 2:
-			System.out.print("Novo Telefone: ");
-			String newTelephone = scanner.nextLine();
-			tenant.setTelephone(telephoneFormat(newTelephone));
-			propertyDAO.TenantUpdate(tenant);
-			break;
-		case 3:
-			System.out.print("Novo Email: ");
-			String newEmail = scanner.nextLine();
-			tenant.setEmail(newEmail);
-			propertyDAO.TenantUpdate(tenant);
-			break;
-		case 4:
-			System.out.print("Novo Saldo: ");
-			double newBalance = scanner.nextDouble();
-			tenant.setBalance(newBalance);
-			propertyDAO.TenantUpdate(tenant);
-			break;
-		default:
-			option = 0;
-			System.out.println("\nInquilino não foi atualizado!");
-			break;
+	public void changeTenant(int id) throws TenantException, SQLException {
+		if (propertyDAO.getTenants().isEmpty()) {
+			System.out.println(("Erro: " + EnumTenantException.TenantNoRegistered));
+		} else {
+			if (id <= 0 || id > propertyDAO.getTenants().size()) {
+				throw new TenantException("Erro: " + EnumPropertyException.PropertyInvalidIndex);
+			}
+			
+			Tenant tenant = new Tenant();
+
+			System.out.println(
+					"\nQuais as novas informações do Inquilino deseja mudar? \n0.Nenhum | 1.Nome | 2.Telefone | 3.Email | 4.Saldo |");
+			System.out.print("\nOpção: ");
+
+			int option = scanner.nextInt();
+			scanner.nextLine();
+			switch (option) {
+			case 1:
+				System.out.print("Novo Nome: ");
+				String newName = scanner.nextLine();
+				tenant.setName(nameFormart(newName));
+				tenant.setId(id);
+				propertyDAO.TenantUpdateName(tenant);
+				break;
+			case 2:
+				System.out.print("Novo Telefone: ");
+				String newTelephone = scanner.nextLine();
+				tenant.setTelephone(telephoneFormat(newTelephone));
+				tenant.setId(id);
+				propertyDAO.TenantUpdateTelephone(tenant);
+				break;
+			case 3:
+				System.out.print("Novo Email: ");
+				String newEmail = scanner.nextLine();
+				tenant.setEmail(newEmail);
+				tenant.setId(id);
+				propertyDAO.TenantUpdateEmail(tenant);
+				break;
+			case 4:
+				System.out.print("Novo Saldo: ");
+				double newBalance = scanner.nextDouble();
+				tenant.setBalance(newBalance);
+				tenant.setId(id);
+				propertyDAO.TenantUpdateBalance(tenant);
+				break;
+			default:
+				option = 0;
+				System.out.println("\nInquilino não foi atualizado!");
+				break;
+			}
 		}
 	}
 

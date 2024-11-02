@@ -1,21 +1,21 @@
 package views;
 // MAIN
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Enum.EnumPropertyException;
+import Enum.PropertyOccupation;
+import Enum.PropertyType;
 import containers.LandlordRepository;
 import containers.LeaseRepository;
 import containers.PropertyRepository;
-import containers.TenantRepository;
 import entity.Landlord;
 import entity.Lease;
 import entity.Property;
 import entity.Tenant;
-import enums.EnumPropertyException;
-import enums.PropertyOccupation;
-import enums.PropertyType;
 import exceptions.LandlordException;
 import exceptions.LeaseException;
 import exceptions.PropertyException;
@@ -30,7 +30,6 @@ public class Main {
 
 	// NEWS RESPOSITORYS
 	private static PropertyRepository propertyRepository = new PropertyRepository();
-	private static TenantRepository tenantRepository = new TenantRepository();
 	private static LandlordRepository landlordRepository = new LandlordRepository();
 	private static LeaseRepository leaseRepository = new LeaseRepository(new ArrayList<>());
 
@@ -41,7 +40,7 @@ public class Main {
 	private static LeaseService leaseService = new LeaseService(leaseRepository);
 
 	public static void main(String[] args)
-			throws TenantException, LandlordException, PropertyException, LeaseException, ParseException {
+			throws TenantException, LandlordException, PropertyException, LeaseException, ParseException, SQLException {
 
 		// MENU OPTIONS
 		boolean exit = false;
@@ -89,7 +88,7 @@ public class Main {
 		System.out.print("\nOpção: ");
 	}
 
-	private static void menuTenant() throws TenantException {
+	private static void menuTenant() throws TenantException, SQLException {
 		boolean exit = false;
 		do {
 			System.out.println("\nMenu Inquilino: ");
@@ -103,16 +102,12 @@ public class Main {
 			switch (option) {
 			case 1:
 				createTenants();
-				tenantService.listTenant();
 				break;
 			case 2:
 				tenantService.listTenant();
 				break;
 			case 3:
 				changeTenants();
-				break;
-			case 4:
-				searchTenant();
 				break;
 			case 0:
 				exit = true;
@@ -135,16 +130,12 @@ public class Main {
 			switch (option) {
 			case 1:
 				createLandlord();
-				landlordService.listLandlord();
 				break;
 			case 2:
 				landlordService.listLandlord();
 				break;
 			case 3:
 				changeLandlord();
-				break;
-			case 4:
-				searchLandlord();
 				break;
 			case 0:
 				exit = true;
@@ -168,7 +159,6 @@ public class Main {
 			switch (option) {
 			case 1:
 				createProperty();
-				propertyService.listProperty();
 				break;
 			case 2:
 				propertyService.listProperty();
@@ -178,10 +168,6 @@ public class Main {
 				break;
 			case 4:
 				listProperties();
-				propertyService.listProperty();
-				break;
-			case 5:
-				searchProperty();
 				break;
 			case 0:
 				exit = true;
@@ -204,16 +190,12 @@ public class Main {
 			switch (option) {
 			case 1:
 				createLease();
-				leaseService.listLease();
 				break;
 			case 2:
 				leaseService.listLease();
 				break;
 			case 3:
 				changeLease();
-				break;
-			case 4:
-				searchLease();
 				break;
 			case 0:
 				exit = true;
@@ -235,6 +217,7 @@ public class Main {
 			String email = scanner.nextLine();
 			System.out.print("Saldo: ");
 			double balance = scanner.nextDouble();
+			
 			Tenant tenant = new Tenant(name, cpf, telephone, email, balance);
 			tenantService.addTenant(tenant.getName(), tenant.getCpf(), tenant.getTelephone(), tenant.getEmail(),
 					tenant.getBalance());
@@ -244,8 +227,8 @@ public class Main {
 	}
 
 	// CHANGE TENANTS
-	private static void changeTenants() throws TenantException {
-		System.out.print("\nInsira o índice do Inquilino à editar: ");
+	private static void changeTenants() throws TenantException, SQLException {
+		System.out.print("\nInsira o ID do Inquilino à editar: ");
 		int id = scanner.nextInt();
 		tenantService.changeTenant(id);
 	}
@@ -429,31 +412,6 @@ public class Main {
 
 	private static void deleteLease() {
 		leaseService.removeLease();
-	}
-
-	// SEARCH
-	private static void searchTenant() {
-		System.out.print("\nInsira o índice do Inquilino: ");
-		int idTenant = scanner.nextInt();
-		tenantService.searchTenant(idTenant);
-	}
-
-	private static void searchProperty() {
-		System.out.print("\nInsira o índice do Imovel: ");
-		int idProperty = scanner.nextInt();
-		propertyService.searchProperty(idProperty);
-	}
-
-	private static void searchLandlord() {
-		System.out.print("\nInsira o índice do Proprietario: ");
-		int idLandlord = scanner.nextInt();
-		landlordService.searchLandlord(idLandlord);
-	}
-
-	private static void searchLease() {
-		System.out.print("\nInsira o índice do Contrato: ");
-		int idLease = scanner.nextInt();
-		leaseService.searchLease(idLease);
 	}
 
 	// LIST OF READY PROPERTIES

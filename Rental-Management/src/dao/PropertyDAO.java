@@ -97,7 +97,159 @@ public class PropertyDAO {
 		}
 
 	}
+	
+	public void TenantUpdateName(Tenant tenant) {
+		String sql = "UPDATE tenant SET name = ?" + "WHERE id = ?";
 
+		Connection conn = null;
+		PreparedStatement pstm = null;
+
+		try {
+			// Cria conexão com o banco
+			conn = PropertyConnections.createConnectionToMySQL();
+
+			// Criar a classe para executar a query
+			pstm = (PreparedStatement) conn.prepareStatement(sql);
+
+			// Adicionar os valores para atualizar
+			pstm.setString(1, tenant.getName());
+			pstm.setInt(2, tenant.getId());
+
+			// Executar a query
+			pstm.execute();
+			System.out.println("\nInquilino atualizado com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public void TenantUpdateTelephone(Tenant tenant) {
+		String sql = "UPDATE tenant SET telephone = ?" + "WHERE id = ?";
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+
+		try {
+			// Cria conexão com o banco
+			conn = PropertyConnections.createConnectionToMySQL();
+
+			// Criar a classe para executar a query
+			pstm = (PreparedStatement) conn.prepareStatement(sql);
+
+			// Adicionar os valores para atualizar
+			pstm.setString(1, tenant.getTelephone());
+			pstm.setInt(2, tenant.getId());
+
+			// Executar a query
+			pstm.execute();
+			System.out.println("\nInquilino atualizado com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	public void TenantUpdateEmail(Tenant tenant) {
+		String sql = "UPDATE tenant SET email = ?" + "WHERE id = ?";
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+
+		try {
+			// Cria conexão com o banco
+			conn = PropertyConnections.createConnectionToMySQL();
+
+			// Criar a classe para executar a query
+			pstm = (PreparedStatement) conn.prepareStatement(sql);
+
+			// Adicionar os valores para atualizar
+			pstm.setString(1, tenant.getEmail());
+			pstm.setInt(2, tenant.getId());
+
+			// Executar a query
+			pstm.execute();
+			System.out.println("\nInquilino atualizado com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	public void TenantUpdateBalance(Tenant tenant) {
+		String sql = "UPDATE tenant SET balance = ? " + "WHERE id = ?";
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+
+		try {
+			// Cria conexão com o banco
+			conn = PropertyConnections.createConnectionToMySQL();
+
+			// Criar a classe para executar a query
+			pstm = (PreparedStatement) conn.prepareStatement(sql);
+
+			// Adicionar os valores para atualizar
+			pstm.setDouble(1, tenant.getBalance());
+			pstm.setInt(2, tenant.getId());
+
+			// Executar a query
+			pstm.execute();
+			System.out.println("\nInquilino atualizado com sucesso!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
 	public void tenantDeleteByID(int id) {
 		String sql = "DELETE FROM tenant  WHERE id = ?";
 
