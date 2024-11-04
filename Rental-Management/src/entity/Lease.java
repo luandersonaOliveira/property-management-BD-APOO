@@ -1,4 +1,5 @@
 package entity;
+
 // Locação (Contrato)
 
 public class Lease {
@@ -11,6 +12,10 @@ public class Lease {
 	private Tenant tenant;
 
 	// CONSTRUCTOR
+
+	public Lease() {
+
+	}
 
 	public Lease(String startDate, String endDate, Landlord landlord, Property property, Tenant tenant) {
 		this.startDate = startDate;

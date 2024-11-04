@@ -4,6 +4,7 @@ package Interface;
 import java.sql.SQLException;
 import java.util.List;
 
+import entity.Landlord;
 import entity.Tenant;
 
 public interface ITenantRepository {
@@ -22,4 +23,6 @@ public interface ITenantRepository {
 	public void deleteByID(int id);
 
 	public List<Tenant> getTenants() throws SQLException;
+	
+	public Tenant getTenantById(int id) throws SQLException;
 }

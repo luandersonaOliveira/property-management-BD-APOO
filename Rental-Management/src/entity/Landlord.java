@@ -12,11 +12,11 @@ public class Landlord {
 	private List<Property> property;
 
 	// CONSTRUCTOR
-	
+
 	public Landlord() {
-		
+
 	}
-	
+
 	public Landlord(String name, String cpf, String telephone, String email) {
 		this.name = name;
 		this.cpf = cpf;

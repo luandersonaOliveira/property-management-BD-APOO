@@ -1,5 +1,4 @@
 package containers;
-// Repositório da Locação (Contrato)
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,18 +7,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Interface.ILeaseRepository;
+import Interface.ITenantLeaseRepository;
 import connection.PropertyConnections;
-import entity.Landlord;
 import entity.Lease;
-import entity.Property;
 import entity.Tenant;
+import entity.TenantLease;
 
-public class LeaseRepository implements ILeaseRepository {
+public class TenantLeaseRepository implements ITenantLeaseRepository {
 
 	@Override
-	public void leaseSave(Lease lease) {
-		String sql = "INSERT INTO lease (start_date, end_date, id_property, cpf_landlord, cpf_tenant) VALUES (?, ?, ?, ?, ?)";
+	public void tenantLeaseSave(TenantLease tenantLease) {
+		String sql = "INSERT INTO tenant_lease (id_tenant, id_lease) VALUES (?, ?)";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -28,14 +26,11 @@ public class LeaseRepository implements ILeaseRepository {
 
 			if (conn != null) {
 				pstm = conn.prepareStatement(sql);
-				pstm.setString(1, lease.getStartDate());
-				pstm.setString(2, lease.getEndDate());
-				pstm.setInt(3, lease.getProperty().getId());
-				pstm.setString(4, lease.getLandlord().getCpf());
-				pstm.setString(5, lease.getTenant().getCpf());
+				pstm.setInt(1, tenantLease.getTenant().getId());
+				pstm.setInt(2, tenantLease.getLease().getId());
 
 				pstm.execute();
-				System.out.println("\nContrato adicionado com sucesso!");
+				System.out.println("\nInquilino adicionado no Contrato com sucesso!");
 			} else {
 				System.out.println("Erro: Conexão com o banco de dados falhou.");
 			}
@@ -56,8 +51,8 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateAll(Lease lease) {
-		String sql = "UPDATE lease SET start_date = ?, end_date = ?" + "WHERE id = ?";
+	public void tenantLeaseUpdateAll(TenantLease tenantLease) {
+		String sql = "UPDATE tenant_lease SET id_tenant = ?, id_lease = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -70,9 +65,9 @@ public class LeaseRepository implements ILeaseRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, lease.getStartDate());
-			pstm.setString(2, lease.getEndDate());
-			pstm.setInt(3, lease.getId());
+			pstm.setInt(1, tenantLease.getTenant().getId());
+			pstm.setInt(2, tenantLease.getLease().getId());
+			pstm.setInt(3, tenantLease.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -95,8 +90,8 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateStartDate(Lease lease) {
-		String sql = "UPDATE lease SET start_date = ? " + "WHERE id = ?";
+	public void tenantLeaseUpdateIdTenant(TenantLease tenantLease) {
+		String sql = "UPDATE tenant_lease SET id_tenant = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -109,8 +104,8 @@ public class LeaseRepository implements ILeaseRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, lease.getStartDate());
-			pstm.setInt(2, lease.getId());
+			pstm.setInt(1, tenantLease.getTenant().getId());
+			pstm.setInt(2, tenantLease.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -133,8 +128,8 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateEndDate(Lease lease) {
-		String sql = "UPDATE lease SET end_date = ?" + "WHERE id = ?";
+	public void tenantLeaseUpdateIdLease(TenantLease tenantLease) {
+		String sql = "UPDATE tenant_lease SET id_lease = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -147,8 +142,8 @@ public class LeaseRepository implements ILeaseRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, lease.getEndDate());
-			pstm.setInt(2, lease.getId());
+			pstm.setInt(1, tenantLease.getLease().getId());
+			pstm.setInt(2, tenantLease.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -171,8 +166,8 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseDeleteByID(int id) {
-		String sql = "DELETE FROM lease  WHERE id = ?";
+	public void tenantLeaseDeleteByID(int id) {
+		String sql = "DELETE FROM tenant_lease  WHERE id = ?";
 
 		Connection conn = null;
 
@@ -185,7 +180,7 @@ public class LeaseRepository implements ILeaseRepository {
 			pstm.setInt(1, id);
 
 			pstm.execute();
-			System.out.println("\nContrato removido com sucesso!");
+			System.out.println("\nInquilino removido no Contrato  com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -204,10 +199,10 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public List<Lease> getLease() throws SQLException {
-		String sql = "SELECT * FROM lease";
+	public List<TenantLease> getTenantLease() throws SQLException {
+		String sql = "SELECT * FROM tenant_lease";
 
-		List<Lease> leases = new ArrayList<Lease>();
+		List<TenantLease> tenantLeases = new ArrayList<TenantLease>();
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -220,33 +215,19 @@ public class LeaseRepository implements ILeaseRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 			rset = pstm.executeQuery();
 			while (rset.next()) {
-				Lease lease = new Lease();
-
-				// Recuperar o id
-				lease.setId(rset.getInt("id"));
-
-				// Recuperar a data inicio
-				lease.setStartDate(rset.getString("start_date"));
-
-				// Recuperar a data final
-				lease.setEndDate(rset.getString("end_date"));
-
-				// Recuperar o id_property
-				Property property = new Property();
-				property.setId(rset.getInt("id_property"));
-				lease.setProperty(property);
-
-				// Recuperar o cpf_Landlord
-				Landlord landlord = new Landlord();
-				landlord.setCpf(rset.getString("cpf_landlord"));
-				lease.setLandlord(landlord);
+				TenantLease tenantLease = new TenantLease();
 
 				// Recuperar o cpf_tenant
 				Tenant tenant = new Tenant();
-				tenant.setCpf(rset.getString("cpf_tenant"));
-				lease.setTenant(tenant);
+				tenant.setId(rset.getInt("id"));
+				tenantLease.setTenant(tenant);
 
-				leases.add(lease);
+				Lease lease = new Lease();
+				lease.setId(rset.getInt("id"));
+				tenantLease.setLease(lease);
+
+				tenantLeases.add(tenantLease);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -268,61 +249,7 @@ public class LeaseRepository implements ILeaseRepository {
 			}
 
 		}
-		return leases;
-	}
-
-	@Override
-	public Lease getLeaseById(int id) throws SQLException {
-		String sql = "SELECT * FROM lease WHERE id = ?";
-		Lease lease = null;
-
-	    Connection conn = null;
-	    PreparedStatement pstm = null;
-	    ResultSet rset = null;
-
-	    try {
-	        conn = PropertyConnections.createConnectionToMySQL();
-	        pstm = conn.prepareStatement(sql);
-	        pstm.setInt(1, id); // Define o ID do proprietário
-	        rset = pstm.executeQuery();
-
-	        if (rset.next()) {
-	            lease = new Lease();
-	            lease.setId(rset.getInt("id"));
-				lease.setStartDate(rset.getString("start_date"));
-				lease.setEndDate(rset.getString("end_date"));
-				
-				Property property = new Property();
-				property.setId(rset.getInt("id_property"));
-				lease.setProperty(property);
-
-				Landlord landlord = new Landlord();
-				landlord.setCpf(rset.getString("cpf_landlord"));
-				lease.setLandlord(landlord);
-
-				Tenant tenant = new Tenant();
-				tenant.setCpf(rset.getString("cpf_tenant"));
-				lease.setTenant(tenant);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rset != null) {
-	                rset.close();
-	            }
-	            if (pstm != null) {
-	                pstm.close();
-	            }
-	            if (conn != null) {
-	                conn.close();
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
-
-	    return lease;
+		return tenantLeases;
 	}
 
 }

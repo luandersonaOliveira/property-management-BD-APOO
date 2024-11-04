@@ -26,6 +26,7 @@ public class LandlordService {
 		Landlord landlord = createLandlord(name, cpf, telephone, email);
 		if (landlord != null) {
 			landlordDAO.save(landlord);
+
 		} else {
 			throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalid);
 		}
@@ -114,7 +115,7 @@ public class LandlordService {
 
 			System.out.println(
 					"\nQuais as novas informações do Proprietário deseja mudar? \n| 0.Nenhum | 1.Nome | 2.Telefone | 3.Email |");
-			System.out.print("\nOpção: ");
+			System.out.print("\n| Opção: ");
 
 			int option = scanner.nextInt();
 			scanner.nextLine();
@@ -147,5 +148,18 @@ public class LandlordService {
 			}
 		}
 	}
-	
+
+	public Landlord searchLandlord(int id) throws SQLException, Exception {
+	    Landlord landlord = null;
+	    if (landlordDAO.getLandlords().isEmpty()) {
+	        System.out.println("Erro: " + EnumLandlordException.LandlordNoRegistered);
+	    } else {
+	        landlord = landlordDAO.getLandlordById(id);
+	        if (landlord == null) {
+	        	System.out.println("Erro: Proprietário não encontrado.");  
+	        }
+	    }
+	    return landlord;
+	}
+
 }

@@ -344,4 +344,49 @@ public class TenantRepository implements ITenantRepository {
 		return tenants;
 	}
 
+	@Override
+	public Tenant getTenantById(int id) throws SQLException {
+		String sql = "SELECT * FROM tenant WHERE id = ?";
+		Tenant tenant = null;
+
+	    Connection conn = null;
+	    PreparedStatement pstm = null;
+	    ResultSet rset = null;
+
+	    try {
+	        conn = PropertyConnections.createConnectionToMySQL();
+	        pstm = conn.prepareStatement(sql);
+	        pstm.setInt(1, id); // Define o ID do proprietário
+	        rset = pstm.executeQuery();
+
+	        if (rset.next()) {
+	        	tenant = new Tenant();
+	        	tenant.setId(rset.getInt("id"));
+	        	tenant.setName(rset.getString("name"));
+	        	tenant.setCpf(rset.getString("cpf"));
+	        	tenant.setTelephone(rset.getString("telephone"));
+	        	tenant.setEmail(rset.getString("email"));
+	        	tenant.setBalance(rset.getDouble("balance"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rset != null) {
+	                rset.close();
+	            }
+	            if (pstm != null) {
+	                pstm.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return tenant;
+	}
+
 }

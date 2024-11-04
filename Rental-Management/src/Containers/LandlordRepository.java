@@ -301,4 +301,48 @@ public class LandlordRepository implements ILandlordRepository {
 		return landlords;
 	}
 
+	@Override
+	public Landlord getLandlordById(int id) throws SQLException {
+		String sql = "SELECT * FROM landlord WHERE id = ?";
+	    Landlord landlord = null;
+
+	    Connection conn = null;
+	    PreparedStatement pstm = null;
+	    ResultSet rset = null;
+
+	    try {
+	        conn = PropertyConnections.createConnectionToMySQL();
+	        pstm = conn.prepareStatement(sql);
+	        pstm.setInt(1, id); // Define o ID do proprietário
+	        rset = pstm.executeQuery();
+
+	        if (rset.next()) {
+	            landlord = new Landlord();
+	            landlord.setId(rset.getInt("id"));
+	            landlord.setName(rset.getString("name"));
+	            landlord.setCpf(rset.getString("cpf"));
+	            landlord.setTelephone(rset.getString("telephone"));
+	            landlord.setEmail(rset.getString("email"));
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rset != null) {
+	                rset.close();
+	            }
+	            if (pstm != null) {
+	                pstm.close();
+	            }
+	            if (conn != null) {
+	                conn.close();
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return landlord;
+	}
+
 }

@@ -4,6 +4,7 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Enum.EnumLandlordException;
 import Enum.EnumTenantException;
 import containers.TenantRepository;
 import entity.Tenant;
@@ -177,6 +178,19 @@ public class TenantService {
 				break;
 			}
 		}
+	}
+	
+	public Tenant searchTenant(int id) throws SQLException, Exception {
+	    Tenant tenant = null;
+	    if (tenantDAO.getTenants().isEmpty()) {
+	        System.out.println("Erro: " + EnumTenantException.TenantNoRegistered);
+	    } else {
+	        tenant = tenantDAO.getTenantById(id);
+	        if (tenant == null) {
+	        	System.out.println("Erro: Inquilino não encontrado.");
+	        }
+	    }
+	    return tenant;
 	}
 
 }
