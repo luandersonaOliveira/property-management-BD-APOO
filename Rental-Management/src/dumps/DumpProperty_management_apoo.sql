@@ -32,7 +32,7 @@ CREATE TABLE `landlord` (
   `email` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf_UNIQUE` (`cpf`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `lease` (
   CONSTRAINT `lease_ibfk_1` FOREIGN KEY (`id_property`) REFERENCES `property` (`id`),
   CONSTRAINT `lease_ibfk_2` FOREIGN KEY (`cpf_landlord`) REFERENCES `landlord` (`cpf`),
   CONSTRAINT `lease_ibfk_3` FOREIGN KEY (`cpf_tenant`) REFERENCES `tenant` (`cpf`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `property` (
   PRIMARY KEY (`id`),
   KEY `cpf_landlord` (`cpf_landlord`),
   CONSTRAINT `property_ibfk_1` FOREIGN KEY (`cpf_landlord`) REFERENCES `landlord` (`cpf`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,27 +95,7 @@ CREATE TABLE `tenant` (
   `balance` double NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpf_UNIQUE` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tenant_lease`
---
-
-DROP TABLE IF EXISTS `tenant_lease`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tenant_lease` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_tenant` int NOT NULL,
-  `id_lease` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `id_tenant` (`id_tenant`),
-  KEY `id_lease` (`id_lease`),
-  CONSTRAINT `tenant_lease_ibfk_1` FOREIGN KEY (`id_tenant`) REFERENCES `tenant` (`id`),
-  CONSTRAINT `tenant_lease_ibfk_2` FOREIGN KEY (`id_lease`) REFERENCES `lease` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -127,4 +107,4 @@ CREATE TABLE `tenant_lease` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-01  8:47:09
+-- Dump completed on 2024-11-09 15:59:23
