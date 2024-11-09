@@ -39,7 +39,6 @@ public class LeaseService {
 		Lease lease = createLease(startDate, endDate, landlord, property, tenant);
 		if (lease != null) {
 			leaseDAO.leaseSave(lease);
-			System.out.println("\nContrato adicionado com sucesso!");
 		} else {
 			System.out.println("Erro: " + EnumLeaseException.LeaseInvalid);
 		}
@@ -81,6 +80,7 @@ public class LeaseService {
 		tenants.add(tenant);
 
 		tenant.setProperty(property);
+		property.setOccupation(PropertyOccupation.OCCUPIED);
 
 		System.out.println("\n| Inquilino " + tenant.getName() + "\n| Cadastrado ao Imóvel " + property.getAddress());
 	}
@@ -130,7 +130,7 @@ public class LeaseService {
 			System.out.println(("Erro: " + EnumLeaseException.LeaseNoRegistered));
 		} else {
 			if (id <= 0 || id > leaseDAO.getLease().size()) {
-				System.out.println(("Erro: " + EnumLeaseException.LeaseInvalidIndex));
+				throw new LeaseException("Erro: " + EnumLeaseException.LeaseInvalid);
 			}
 
 			Lease lease = new Lease();
@@ -141,22 +141,38 @@ public class LeaseService {
 			scanner.nextLine();
 			switch (option) {
 			case 1:
-				System.out.print("\nNova Data de Inicio (DD/MM/AA): ");
+				System.out.print("\nNova Data de Inicio (YYYY/MM/DD): ");
 				String newStartDate = scanner.nextLine();
 				lease.setStartDate(dateTimeExtensionss(newStartDate));
+				lease.setId(id);
 				leaseDAO.LeaseUpdateStartDate(lease);
 				break;
 			case 2:
-				System.out.print("\nNova Data de Fim (DD/MM/AA): ");
+				System.out.print("\nNova Data de Fim (YYYY/MM/DD): ");
 				String newEndDate = scanner.nextLine();
 				lease.setEndDate(dateTimeExtensionss(newEndDate));
+				lease.setId(id);
 				leaseDAO.LeaseUpdateEndDate(lease);
 				break;
 			default:
-				option = 0;
 				System.out.println("\nContrato não foi atualizado!");
+				option = 0;
 				break;
 			}
 		}
+	}
+	
+	public Lease searchLease(int id) throws SQLException, Exception {
+		Lease lease = null;
+	    if (leaseDAO.getLease().isEmpty()) {
+	        System.out.println("Erro: " + EnumLeaseException.LeaseNoRegistered);
+	    } else {
+	    	lease = leaseDAO.getLeaseById(id);
+	        if (lease == null) {
+	        	System.out.println("Erro: Contrato não encontrado.");
+	        	
+	        }
+	    }
+	    return lease;
 	}
 }

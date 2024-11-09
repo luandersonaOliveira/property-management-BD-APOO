@@ -29,7 +29,6 @@ public class Main {
 	private static LandlordService landlordService = new LandlordService();
 	private static PropertyService propertyService = new PropertyService();
 	private static LeaseService leaseService = new LeaseService();
-	// private static TenantLeaseService tenantLeaseService = new TenantLeaseService(); // FALTA TERMINAR
 
 	public static void main(String[] args) throws Exception {
 
@@ -158,8 +157,8 @@ public class Main {
 			System.out.println("| 0.Nenhum.");
 			System.out.println("| 1.Para Cadastrar Imoveis aos Proprietários.");
 			System.out.println("| 2.Para Checar Imoveis.");
-			System.out.println("| 4.Para Editar Imoveis.");
-			System.out.println("| 5.Para Adicionar lista de Imoveis pronta.");
+			System.out.println("| 3.Para Editar Imoveis.");
+			System.out.println("| 4.Para Adicionar lista de Imoveis pronta.");
 			System.out.println("---------------------------------------------");
 			System.out.print("\n| Opção: ");
 			int option = scanner.nextInt();
@@ -172,10 +171,10 @@ public class Main {
 				propertyService.listProperty();
 				break;
 			case 3:
-				listProperties();
+				changeProperty();
 				break;
 			case 4:
-				changeProperty();
+				listProperties();
 				break;
 			case 0:
 				exit = true;
@@ -434,7 +433,6 @@ public class Main {
 	}
 
 	// LIST OF READY PROPERTIES
-	
 	private static void listPropertiesByLandlordId() throws SQLException {
 		System.out.print("\nInsira o ID do Proprietário: ");
 		int id = scanner.nextInt();
@@ -471,8 +469,9 @@ public class Main {
 		Property p2 = new Property("Rua do Mucugê (BA)", 1200, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED);
 		Property p3 = new Property("Rua das Pedras (RJ)", 1600, PropertyType.RESIDENTIAL,
 				PropertyOccupation.UNOCCUPIED);
-		Property p4 = new Property("Rua da Aurora (PE)", 1800, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED);
-		Property p5 = new Property("Rua Bento Gonçalves (RS)", 2000, PropertyType.RESIDENTIAL,
+		Property p4 = new Property("Rua da Aurora (PE)",  1800, PropertyType.COMMERCIAL,
+				PropertyOccupation.UNOCCUPIED);
+		Property p5 = new Property("Rua Bento Gonçalves (RS)",  2000, PropertyType.RESIDENTIAL,
 				PropertyOccupation.UNOCCUPIED);
 
 		// PROPERTY SERVICE
@@ -488,7 +487,7 @@ public class Main {
 		leaseService.assignPropertyToLandlord(ll3, p3);
 		leaseService.assignPropertyToLandlord(ll4, p4);
 		leaseService.assignPropertyToLandlord(ll5, p5);
-
+		
 	}
 
 }

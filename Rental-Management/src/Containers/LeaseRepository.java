@@ -33,7 +33,7 @@ public class LeaseRepository implements ILeaseRepository {
 				pstm.setInt(3, lease.getProperty().getId());
 				pstm.setString(4, lease.getLandlord().getCpf());
 				pstm.setString(5, lease.getTenant().getCpf());
-
+				
 				pstm.execute();
 				System.out.println("\nContrato adicionado com sucesso!");
 			} else {
@@ -276,22 +276,23 @@ public class LeaseRepository implements ILeaseRepository {
 		String sql = "SELECT * FROM lease WHERE id = ?";
 		Lease lease = null;
 
-	    Connection conn = null;
-	    PreparedStatement pstm = null;
-	    ResultSet rset = null;
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rset = null;
 
-	    try {
-	        conn = PropertyConnections.createConnectionToMySQL();
-	        pstm = conn.prepareStatement(sql);
-	        pstm.setInt(1, id); // Define o ID do proprietário
-	        rset = pstm.executeQuery();
+		try {
+			conn = PropertyConnections.createConnectionToMySQL();
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, id); // Define o ID do proprietário
+			rset = pstm.executeQuery();
 
-	        if (rset.next()) {
-	            lease = new Lease();
-	            lease.setId(rset.getInt("id"));
+			if (rset.next()) {
+				lease = new Lease();
+				lease.setId(rset.getInt("id"));
+
 				lease.setStartDate(rset.getString("start_date"));
 				lease.setEndDate(rset.getString("end_date"));
-				
+
 				Property property = new Property();
 				property.setId(rset.getInt("id_property"));
 				lease.setProperty(property);
@@ -303,26 +304,26 @@ public class LeaseRepository implements ILeaseRepository {
 				Tenant tenant = new Tenant();
 				tenant.setCpf(rset.getString("cpf_tenant"));
 				lease.setTenant(tenant);
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rset != null) {
-	                rset.close();
-	            }
-	            if (pstm != null) {
-	                pstm.close();
-	            }
-	            if (conn != null) {
-	                conn.close();
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rset != null) {
+					rset.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return lease;
+		return lease;
 	}
 
 }

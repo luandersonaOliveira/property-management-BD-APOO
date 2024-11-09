@@ -4,7 +4,6 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import Enum.EnumLandlordException;
 import Enum.EnumTenantException;
 import containers.TenantRepository;
 import entity.Tenant;

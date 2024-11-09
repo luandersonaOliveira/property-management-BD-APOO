@@ -4,7 +4,6 @@ package Interface;
 import java.sql.SQLException;
 import java.util.List;
 
-import entity.Landlord;
 import entity.Tenant;
 
 public interface ITenantRepository {

@@ -24,4 +24,6 @@ public interface IPropertyRepository {
 	public List<Property> getProperty() throws SQLException;
 	
 	public Property getPropertyById(int id) throws SQLException;
+	
+	public List<Property> getPropertyByLandlordId(int id) throws SQLException;
 }

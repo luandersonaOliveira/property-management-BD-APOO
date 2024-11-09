@@ -401,6 +401,7 @@ public class PropertyRepository implements IPropertyRepository {
 		return property;
 	}
 	
+	@Override
 	public List<Property> getPropertyByLandlordId(int id) throws SQLException {
 		String sql = "SELECT p.id, p.address, p.rental_value, p.type, p.occupation, p.cpf_landlord FROM landlord l JOIN property p ON l.cpf = p.cpf_landlord WHERE l.id = ? ORDER BY l.id";
 		List<Property> propertys = new ArrayList<Property>();
