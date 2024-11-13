@@ -1,19 +1,31 @@
 package entity;
+
+import Enum.PaymentMethod;
+import Enum.PaymentStatus;
+
 // Pagamento
 
 public class Payment {
 	// ATTRIBUTES
 
 	private int id;
-	private double value;
-	private String datePayment;
+	private String paymentDate;
+	private double amountToPay;
+	private PaymentMethod method;
+	private PaymentStatus status;
 	private Lease lease;
 
 	// CONSTRUCTOR
 
-	public Payment(double value, String datePayment, Lease lease) {
-		this.value = value;
-		this.datePayment = datePayment;
+	public Payment() {
+
+	}
+
+	public Payment(String paymentDate, double amountToPay, PaymentMethod method, PaymentStatus status, Lease lease) {
+		this.paymentDate = paymentDate;
+		this.amountToPay = amountToPay;
+		this.method = method;
+		this.status = status;
 		this.lease = lease;
 	}
 
@@ -27,20 +39,36 @@ public class Payment {
 		this.id = id;
 	}
 
-	public double getValue() {
-		return value;
+	public String getPaymentDate() {
+		return paymentDate;
 	}
 
-	public void setValue(double value) {
-		this.value = value;
+	public void setPaymentDate(String paymentDate) {
+		this.paymentDate = paymentDate;
 	}
 
-	public String getDatePayment() {
-		return datePayment;
+	public double getAmountToPay() {
+		return amountToPay;
 	}
 
-	public void setDatePayment(String datePayment) {
-		this.datePayment = datePayment;
+	public void setAmountToPay(double amountToPay) {
+		this.amountToPay = amountToPay;
+	}
+
+	public PaymentMethod getMethod() {
+		return method;
+	}
+
+	public void setMethod(PaymentMethod method) {
+		this.method = method;
+	}
+
+	public PaymentStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(PaymentStatus status) {
+		this.status = status;
 	}
 
 	public Lease getLease() {
@@ -50,4 +78,5 @@ public class Payment {
 	public void setLease(Lease lease) {
 		this.lease = lease;
 	}
+
 }

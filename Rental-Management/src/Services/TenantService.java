@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import Enum.EnumTenantException;
+import Enum.PersonPosition;
 import containers.TenantRepository;
 import entity.Tenant;
 import exceptions.TenantException;
@@ -36,7 +37,7 @@ public class TenantService {
 
 	private Tenant createTenant(String name, String cpf, String telephone, String email, double balance)
 			throws TenantException {
-		return new Tenant(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email, balance);
+		return new Tenant(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email, balance, PersonPosition.Tenant);
 	}
 
 	// FORMART

@@ -1,14 +1,14 @@
 package entity;
+// Proprietário (Espefico de imovel)
 
 import java.util.List;
 
-// Proprietário (Espefico de imovel)
+import Enum.PersonPosition;
 
-public class Landlord {
+public class Landlord extends Person{
 	// ATTRIBUTES
 
 	private int id;
-	private String name, cpf, telephone, email;
 	private List<Property> property;
 
 	// CONSTRUCTOR
@@ -17,13 +17,11 @@ public class Landlord {
 
 	}
 
-	public Landlord(String name, String cpf, String telephone, String email) {
-		this.name = name;
-		this.cpf = cpf;
-		this.telephone = telephone;
-		this.email = email;
+	public Landlord(String name, String cpf, String telephone, String email, PersonPosition position) {
+		super(name, cpf, telephone, email, position);
+		this.id = super.getId();
 	}
-
+	
 	// METODOS ESPECIAS
 
 	public int getId() {
@@ -33,39 +31,7 @@ public class Landlord {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getTelephone() {
-		return telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	
 	public List<Property> getProperty() {
 		return property;
 	}

@@ -15,13 +15,13 @@ public class Property {
 	private PropertyType type;
 	private PropertyOccupation occupation;
 	private Landlord landlord;
-    private List<Tenant> tenant;
+	private List<Tenant> tenant;
 
 	// CONSTRUCTOR
-    
-    public Property() {
-    	
-    }
+
+	public Property() {
+
+	}
 
 	public Property(String address, double rentalValue, PropertyType type, PropertyOccupation occupation) {
 		this.address = address;

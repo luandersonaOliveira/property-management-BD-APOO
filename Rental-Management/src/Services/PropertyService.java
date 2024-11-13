@@ -11,6 +11,7 @@ import Enum.PropertyType;
 import containers.PropertyRepository;
 import entity.Landlord;
 import entity.Property;
+import entity.PropertyResidential;
 import exceptions.PropertyException;
 
 public class PropertyService {
@@ -41,8 +42,36 @@ public class PropertyService {
 	}
 
 	private Property createProperty(Landlord landlord, String address, double rentalValue, PropertyType type,
-			PropertyOccupation occupation) {
-		return new Property(addressFormat(address), rentalValue, type, occupation);
+			PropertyOccupation occupation) throws PropertyException {
+
+		switch (type) {
+		case RESIDENTIAL:
+			System.out.print("\nNumeros de quartos: ");
+			int numberOfRooms = scanner.nextInt();
+			
+			System.out.print("Área de Lazer: 1.Sim | 2.Nâo");
+			System.out.print("\n| Opção: ");
+			int theLeisureArea = scanner.nextInt();
+			
+			boolean area = false;
+			if(theLeisureArea == 1) {
+				area = true;
+			}
+			
+			PropertyResidential residential = new PropertyResidential(addressFormat(address), rentalValue, type, occupation, numberOfRooms, area);
+			return new Property(residential.getAddress(), residential.getRentalValue(), residential.getType(), residential.getOccupation());
+		case COMMERCIAL:
+			System.out.print("Tipos de Negócio: 0.Outro | 1.Alimentação | 2.HEALTH | 3.AUTOMOTIVESERVICES | 4.FASHION | 5.EDUCATION ");
+			System.out.print("\n| Opção: ");
+			int TheTypeOfBusiness = scanner.nextInt();
+			
+			System.out.print("\nNumeros de Salas: ");
+			int numberOfRoom = scanner.nextInt();
+			
+			return new Property(addressFormat(address), rentalValue, type, occupation);
+		default:
+			throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidType);
+		}
 	}
 
 	// Formart
@@ -71,22 +100,22 @@ public class PropertyService {
 			}
 		}
 	}
-	
+
 	// LIST
-		public void listPropertyByLandlordId(int id) throws SQLException {
-			if (propertyDAO.getProperty().isEmpty()) {
-				System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
-			} else {
-				for (Property p : propertyDAO.getPropertyByLandlordId(id)) {
-					System.out.print("\nID Imóvel: " + p.getId() + "\n");
-					System.out.print(" | Cpf Proprietário: " + p.getLandlord().getCpf());
-					System.out.print("\n | Endereço: " + p.getAddress());
-					System.out.print("\n | Valor do Aluguel: " + p.getRentalValue());
-					System.out.print("\n | Tipo: " + p.getType());
-					System.out.print("\n | Ocupação: " + p.getOccupation() + "\n");
-				}
+	public void listPropertyByLandlordId(int id) throws SQLException {
+		if (propertyDAO.getProperty().isEmpty()) {
+			System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
+		} else {
+			for (Property p : propertyDAO.getPropertyByLandlordId(id)) {
+				System.out.print("\nID Imóvel: " + p.getId() + "\n");
+				System.out.print(" | Cpf Proprietário: " + p.getLandlord().getCpf());
+				System.out.print("\n | Endereço: " + p.getAddress());
+				System.out.print("\n | Valor do Aluguel: " + p.getRentalValue());
+				System.out.print("\n | Tipo: " + p.getType());
+				System.out.print("\n | Ocupação: " + p.getOccupation() + "\n");
 			}
 		}
+	}
 
 	// CHANGE
 	public void changeProperty(int id) throws PropertyException, SQLException {
@@ -98,11 +127,11 @@ public class PropertyService {
 			}
 
 			Property property = new Property();
-			
+
 			System.out.println(
 					"\nQuais as novas informações do Imóvel deseja mudar? \n| 0.Nenhum | 1.Endereço | 2.Valor do Aluguel | 3.Tipo | 4.Ocupação |");
 			System.out.print("\n| Opção: ");
-			
+
 			int option = scanner.nextInt();
 			scanner.nextLine();
 			switch (option) {
@@ -165,19 +194,19 @@ public class PropertyService {
 			}
 		}
 	}
-	
+
 	public Property searchProperty(int id) throws SQLException, Exception {
 		Property property = null;
-	    if (propertyDAO.getProperty().isEmpty()) {
-	        System.out.println("Erro: " + EnumLandlordException.LandlordNoRegistered);
-	    } else {
-	    	property = propertyDAO.getPropertyById(id);
-	        if (property == null) {
-	        	System.out.println("Erro: Imóvel não encontrado.");
-	        	
-	        }
-	    }
-	    return property;
+		if (propertyDAO.getProperty().isEmpty()) {
+			System.out.println("Erro: " + EnumLandlordException.LandlordNoRegistered);
+		} else {
+			property = propertyDAO.getPropertyById(id);
+			if (property == null) {
+				System.out.println("Erro: Imóvel não encontrado.");
+
+			}
+		}
+		return property;
 	}
 
 }

@@ -6,7 +6,8 @@ public class Lease {
 	// ATTRIBUTES
 
 	private int id;
-	private String startDate, endDate;
+	private String startDate, endDate, PropertyReturnDate;
+	private Boolean Fines;
 	private Property property;
 	private Landlord landlord;
 	private Tenant tenant;
@@ -49,6 +50,22 @@ public class Lease {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getPropertyReturnDate() {
+		return PropertyReturnDate;
+	}
+
+	public void setPropertyReturnDate(String propertyReturnDate) {
+		PropertyReturnDate = propertyReturnDate;
+	}
+
+	public Boolean getFines() {
+		return Fines;
+	}
+
+	public void setFines(Boolean fines) {
+		Fines = fines;
 	}
 
 	public Property getProperty() {

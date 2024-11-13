@@ -6,11 +6,14 @@ import java.text.ParseException;
 import java.util.Scanner;
 
 import Enum.EnumPropertyException;
+import Enum.PersonPosition;
 import Enum.PropertyOccupation;
 import Enum.PropertyType;
 import entity.Landlord;
 import entity.Lease;
+import entity.Person;
 import entity.Property;
+import entity.PropertyResidential;
 import entity.Tenant;
 import exceptions.LandlordException;
 import exceptions.LeaseException;
@@ -228,7 +231,10 @@ public class Main {
 			System.out.print("Saldo: ");
 			double balance = scanner.nextDouble();
 
-			Tenant tenant = new Tenant(name, cpf, telephone, email, balance);
+			Person person = new Person(name, cpf, telephone, email, PersonPosition.TENANT);
+			Tenant tenant = new Tenant(person.getName(), person.getCpf(), person.getTelephone(), person.getEmail(),
+					balance, person.getPosition());
+
 			tenantService.addTenant(tenant.getName(), tenant.getCpf(), tenant.getTelephone(), tenant.getEmail(),
 					tenant.getBalance());
 		} catch (TenantException e) {
@@ -255,7 +261,10 @@ public class Main {
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 
-			Landlord landlord = new Landlord(name, cpf, telephone, email);
+			Person person = new Person(name, cpf, telephone, email, PersonPosition.LANDLORD);
+			Landlord landlord = new Landlord(person.getName(), person.getCpf(), person.getTelephone(),
+					person.getEmail(), person.getPosition());
+
 			landlordService.addLandlord(landlord.getName(), landlord.getCpf(), landlord.getTelephone(),
 					landlord.getEmail());
 		} catch (LandlordException e) {
@@ -340,19 +349,20 @@ public class Main {
 			System.out.print("\nInsira o ID do Inquilino: ");
 			int idTenant = scanner.nextInt();
 			Tenant tenant = tenantService.searchTenant(idTenant);
-			
+
 			System.out.print("\nInsira o ID do Imóvel: ");
 			int idProperty = scanner.nextInt();
 			Property property = propertyService.searchProperty(idProperty);
 			scanner.nextLine();
-			
+
 			if (tenant != null && property != null) {
 				System.out.print("\nData de Inicio (YYYY/MM/DD): ");
 				String startDate = scanner.nextLine();
 				System.out.print("\nData de Fim (YYYY/MM/DD): ");
 				String endDate = scanner.nextLine();
 
-				Lease lease = new Lease(leaseService.dateTimeExtensionss(startDate), leaseService.dateTimeExtensionss(endDate), property.getLandlord(), property, tenant);
+				Lease lease = new Lease(leaseService.dateTimeExtensionss(startDate),
+						leaseService.dateTimeExtensionss(endDate), property.getLandlord(), property, tenant);
 				leaseService.addLease(lease.getStartDate(), lease.getEndDate(), lease.getLandlord(),
 						lease.getProperty(), lease.getTenant());
 
@@ -440,14 +450,32 @@ public class Main {
 	}
 
 	private static void listProperties() throws SQLException, Exception {
-		// NÃO ESTOU CONSEGUINDO MANDO ESTA LISTA PARA O BANCO DE DADOS. SOMENTE O LANDLORD.
-		/*
+		// NÃO ESTOU CONSEGUINDO MANDO ESTA LISTA PARA O BANCO DE DADOS. SOMENTE O
+		// LANDLORD.
+
 		// LANDLORD ADD
-		Landlord l1 = new Landlord("Liang", "74678506039", "86986012358", "Liang@gmail.com.br");
-		Landlord l2 = new Landlord("Ravi", "89867001826", "62989335737", "Ravi@gmail.com.br");
-		Landlord l3 = new Landlord("Elli", "21422187926", "63998845787", "Elli@gmail.com.br");
-		Landlord l4 = new Landlord("Norabel", "38766718686", "92999042606", "Norabel@gmail.com.br");
-		Landlord l5 = new Landlord("YuYan", "94614156487", "62991046653", "YuYan@gmail.com.br");
+		Person person1 = new Person("Liang", "74678506039", "86986012358", "Liang@gmail.com.br",
+				PersonPosition.LANDLORD);
+		Landlord l1 = new Landlord(person1.getName(), person1.getCpf(), person1.getTelephone(), person1.getEmail(),
+				person1.getPosition());
+
+		Person person2 = new Person("Ravi", "89867001826", "62989335737", "Ravi@gmail.com.br", PersonPosition.LANDLORD);
+		Landlord l2 = new Landlord(person2.getName(), person2.getCpf(), person2.getTelephone(), person2.getEmail(),
+				person2.getPosition());
+
+		Person person3 = new Person("Elli", "21422187926", "63998845787", "Elli@gmail.com.br", PersonPosition.LANDLORD);
+		Landlord l3 = new Landlord(person3.getName(), person3.getCpf(), person3.getTelephone(), person3.getEmail(),
+				person3.getPosition());
+
+		Person person4 = new Person("Norabel", "38766718686", "92999042606", "Norabel@gmail.com.br",
+				PersonPosition.LANDLORD);
+		Landlord l4 = new Landlord(person4.getName(), person4.getCpf(), person4.getTelephone(), person4.getEmail(),
+				person4.getPosition());
+
+		Person person5 = new Person("YuYan", "94614156487", "62991046653", "YuYan@gmail.com.br",
+				PersonPosition.LANDLORD);
+		Landlord l5 = new Landlord(person5.getName(), person5.getCpf(), person5.getTelephone(), person5.getEmail(),
+				person5.getPosition());
 
 		// LANDLORD SERVICE ADD
 		landlordService.addLandlord(l1.getName(), l1.getCpf(), l1.getTelephone(), l1.getEmail());
@@ -455,7 +483,7 @@ public class Main {
 		landlordService.addLandlord(l3.getName(), l3.getCpf(), l3.getTelephone(), l3.getEmail());
 		landlordService.addLandlord(l4.getName(), l4.getCpf(), l4.getTelephone(), l4.getEmail());
 		landlordService.addLandlord(l5.getName(), l5.getCpf(), l5.getTelephone(), l5.getEmail());
-		*/
+
 		// LANDLORD SERVICE SEARCH
 		Landlord ll1 = landlordService.searchLandlord(3);
 		Landlord ll2 = landlordService.searchLandlord(4);
@@ -469,9 +497,8 @@ public class Main {
 		Property p2 = new Property("Rua do Mucugê (BA)", 1200, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED);
 		Property p3 = new Property("Rua das Pedras (RJ)", 1600, PropertyType.RESIDENTIAL,
 				PropertyOccupation.UNOCCUPIED);
-		Property p4 = new Property("Rua da Aurora (PE)",  1800, PropertyType.COMMERCIAL,
-				PropertyOccupation.UNOCCUPIED);
-		Property p5 = new Property("Rua Bento Gonçalves (RS)",  2000, PropertyType.RESIDENTIAL,
+		Property p4 = new Property("Rua da Aurora (PE)", 1800, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED);
+		Property p5 = new Property("Rua Bento Gonçalves (RS)", 2000, PropertyType.RESIDENTIAL,
 				PropertyOccupation.UNOCCUPIED);
 
 		// PROPERTY SERVICE
@@ -487,7 +514,7 @@ public class Main {
 		leaseService.assignPropertyToLandlord(ll3, p3);
 		leaseService.assignPropertyToLandlord(ll4, p4);
 		leaseService.assignPropertyToLandlord(ll5, p5);
-		
+
 	}
 
 }

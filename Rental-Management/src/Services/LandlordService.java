@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import Enum.EnumLandlordException;
+import Enum.PersonPosition;
 import containers.LandlordRepository;
 import entity.Landlord;
 import exceptions.LandlordException;
@@ -33,7 +34,7 @@ public class LandlordService {
 	}
 
 	public Landlord createLandlord(String name, String cpf, String telephone, String email) throws LandlordException {
-		return new Landlord(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email);
+		return new Landlord(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email, PersonPosition.Landlord);
 	}
 
 	private String nameFormart(String name) {
