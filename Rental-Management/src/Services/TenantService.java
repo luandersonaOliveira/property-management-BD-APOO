@@ -4,10 +4,10 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import Enum.EnumTenantException;
 import Enum.PersonPosition;
 import containers.TenantRepository;
 import entity.Tenant;
+import exceptions.EnumTenantException;
 import exceptions.TenantException;
 
 public class TenantService {

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Scanner;
 
-import Enum.EnumPropertyException;
 import Enum.PersonPosition;
 import Enum.PropertyOccupation;
 import Enum.PropertyType;
@@ -15,6 +14,7 @@ import entity.Person;
 import entity.Property;
 import entity.PropertyResidential;
 import entity.Tenant;
+import exceptions.EnumPropertyException;
 import exceptions.LandlordException;
 import exceptions.LeaseException;
 import exceptions.PropertyException;

@@ -8,14 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import Enum.EnumLeaseException;
-import Enum.EnumPropertyException;
 import Enum.PropertyOccupation;
 import containers.LeaseRepository;
 import entity.Landlord;
 import entity.Lease;
 import entity.Property;
 import entity.Tenant;
+import exceptions.EnumLeaseException;
+import exceptions.EnumPropertyException;
 import exceptions.LeaseException;
 import utils.DatetimeExtensions;
 

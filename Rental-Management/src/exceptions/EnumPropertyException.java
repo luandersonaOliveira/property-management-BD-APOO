@@ -1,4 +1,4 @@
-package Enum;
+package exceptions;
 // Enum Imovel Exception
 
 public enum EnumPropertyException {

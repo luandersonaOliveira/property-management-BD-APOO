@@ -1,4 +1,4 @@
-package Enum;
+package exceptions;
 // Enum Contrato Exception
 
 public enum EnumLeaseException {

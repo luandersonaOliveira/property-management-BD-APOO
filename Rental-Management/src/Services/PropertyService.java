@@ -4,14 +4,14 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import Enum.EnumLandlordException;
-import Enum.EnumPropertyException;
 import Enum.PropertyOccupation;
 import Enum.PropertyType;
 import containers.PropertyRepository;
 import entity.Landlord;
 import entity.Property;
 import entity.PropertyResidential;
+import exceptions.EnumLandlordException;
+import exceptions.EnumPropertyException;
 import exceptions.PropertyException;
 
 public class PropertyService {

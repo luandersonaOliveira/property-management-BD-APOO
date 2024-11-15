@@ -4,10 +4,11 @@ package services;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import Enum.EnumLandlordException;
 import Enum.PersonPosition;
 import containers.LandlordRepository;
 import entity.Landlord;
+import exceptions.EnumLandlordException;
+import exceptions.EnumTenantException;
 import exceptions.LandlordException;
 
 public class LandlordService {
@@ -49,6 +50,23 @@ public class LandlordService {
 		} else {
 			cpf = null;
 			throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalidCPF);
+		}
+	}
+	
+	public static String validateCPF(String cpf) {
+		while (true) {
+			String CPF = cpf.trim();
+			if (CPF.length() != 11 || CPF.contains(" ") || CPF.isBlank() || CPF.isEmpty()) {
+				System.out.print("\nErro: " + EnumTenantException.TenantInvalidCPF);
+				return null;
+			} else {
+				for (int i = 0; i < CPF.length(); i++) {
+					if (!Character.isDigit(CPF.charAt(i))) {
+						return null;
+					}
+				}
+				return CPF;
+			}
 		}
 	}
 

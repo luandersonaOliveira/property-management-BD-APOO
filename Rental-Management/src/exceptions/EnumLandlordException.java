@@ -1,4 +1,4 @@
-package Enum;
+package exceptions;
 // Enum Proprietário Exception
 
 public enum EnumLandlordException {

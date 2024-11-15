@@ -1,4 +1,4 @@
-package Enum;
+package exceptions;
 // Enum Pagamento Exception
 
 public enum EnumPaymentException {

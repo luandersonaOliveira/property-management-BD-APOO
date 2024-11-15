@@ -1,4 +1,4 @@
-package Enum;
+package exceptions;
 // Enum Inquilino Exception
 
 public enum EnumTenantException {
