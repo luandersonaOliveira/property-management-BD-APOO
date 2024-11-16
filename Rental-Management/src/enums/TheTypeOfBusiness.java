@@ -1,4 +1,4 @@
-package Enum;
+package enums;
 
 public enum TheTypeOfBusiness {
 	// Alimentação; Saúde; Serviços Automotivos; Moda; Educação;

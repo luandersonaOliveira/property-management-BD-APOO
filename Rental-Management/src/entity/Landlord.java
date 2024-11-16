@@ -1,11 +1,10 @@
 package entity;
-// Proprietário (Espefico de imovel)
 
 import java.util.List;
 
-import Enum.PersonPosition;
+import enums.PersonsPosition;
 
-public class Landlord extends Person{
+public class Landlord extends Person {
 	// ATTRIBUTES
 
 	private int id;
@@ -17,12 +16,12 @@ public class Landlord extends Person{
 
 	}
 
-	public Landlord(String name, String cpf, String telephone, String email, PersonPosition position) {
-		super(name, cpf, telephone, email, position);
+	public Landlord(String name, String cpf, String telephone, String email, double wallet, PersonsPosition positions) {
+		super(name, cpf, telephone, email, wallet, positions);
 		this.id = super.getId();
 	}
-	
-	// METODOS ESPECIAS
+
+	// SPECIAL METHODS
 
 	public int getId() {
 		return id;
@@ -31,7 +30,7 @@ public class Landlord extends Person{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public List<Property> getProperty() {
 		return property;
 	}
@@ -39,4 +38,5 @@ public class Landlord extends Person{
 	public void setProperty(List<Property> property) {
 		this.property = property;
 	}
+
 }

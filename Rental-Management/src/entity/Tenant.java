@@ -1,13 +1,11 @@
 package entity;
-// Inquilino
 
-import Enum.PersonPosition;
+import enums.PersonsPosition;
 
-public class Tenant extends Person{
+public class Tenant extends Person {
 	// ATTRIBUTES
 
 	private int id;
-	private double balance;
 	private Property property;
 
 	// CONSTRUCTOR
@@ -16,13 +14,12 @@ public class Tenant extends Person{
 
 	}
 
-	public Tenant(String name, String cpf, String telephone, String email, double balance, PersonPosition position) {
-		super(name, cpf, telephone, email, position);
+	public Tenant(String name, String cpf, String telephone, String email, double wallet, PersonsPosition positions) {
+		super(name, cpf, telephone, email, wallet, positions);
 		this.id = super.getId();
-		this.balance = balance;
 	}
 
-	// METODOS ESPECIAS
+	// SPECIAL METHODS
 
 	public int getId() {
 		return id;
@@ -32,14 +29,6 @@ public class Tenant extends Person{
 		this.id = id;
 	}
 
-	public double getBalance() {
-		return balance;
-	}
-
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
-
 	public Property getProperty() {
 		return property;
 	}
@@ -47,4 +36,5 @@ public class Tenant extends Person{
 	public void setProperty(Property property) {
 		this.property = property;
 	}
+
 }

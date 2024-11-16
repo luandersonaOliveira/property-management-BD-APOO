@@ -1,7 +1,7 @@
 package containers;
 // Repositório do Pagamento
 
-import Interface.IPaymentRepository;
+import interfaces.IPaymentRepository;
 
 public class PaymentRepository implements IPaymentRepository {
 	

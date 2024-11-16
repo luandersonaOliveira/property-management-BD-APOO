@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Interface.ILeaseRepository;
+import interfaces.ILeaseRepository;
 import connection.PropertyConnections;
 import entity.Landlord;
 import entity.Lease;
@@ -18,7 +18,7 @@ import entity.Tenant;
 public class LeaseRepository implements ILeaseRepository {
 
 	@Override
-	public void leaseSave(Lease lease) {
+	public void save(Lease lease) {
 		String sql = "INSERT INTO lease (start_date, end_date, id_property, cpf_landlord, cpf_tenant) VALUES (?, ?, ?, ?, ?)";
 
 		Connection conn = null;
@@ -56,7 +56,7 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateAll(Lease lease) {
+	public void updateAll(Lease lease) {
 		String sql = "UPDATE lease SET start_date = ?, end_date = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -95,7 +95,7 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateStartDate(Lease lease) {
+	public void updateStartDate(Lease lease) {
 		String sql = "UPDATE lease SET start_date = ? " + "WHERE id = ?";
 
 		Connection conn = null;
@@ -133,7 +133,7 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseUpdateEndDate(Lease lease) {
+	public void updateEndDate(Lease lease) {
 		String sql = "UPDATE lease SET end_date = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -171,7 +171,7 @@ public class LeaseRepository implements ILeaseRepository {
 	}
 
 	@Override
-	public void LeaseDeleteByID(int id) {
+	public void deleteByID(int id) {
 		String sql = "DELETE FROM lease  WHERE id = ?";
 
 		Connection conn = null;

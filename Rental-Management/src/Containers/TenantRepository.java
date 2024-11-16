@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Interface.ITenantRepository;
+import interfaces.ITenantRepository;
 import connection.PropertyConnections;
 import entity.Tenant;
 
@@ -32,7 +32,7 @@ public class TenantRepository implements ITenantRepository {
 			pstm.setString(2, tenant.getCpf());
 			pstm.setString(3, tenant.getTelephone());
 			pstm.setString(4, tenant.getEmail());
-			pstm.setDouble(5, tenant.getBalance());
+			pstm.setDouble(5, tenant.getWallet());
 
 			// Executar a query
 			pstm.execute();
@@ -74,7 +74,7 @@ public class TenantRepository implements ITenantRepository {
 			pstm.setString(1, tenant.getName());
 			pstm.setString(2, tenant.getTelephone());
 			pstm.setString(3, tenant.getEmail());
-			pstm.setDouble(4, tenant.getBalance());
+			pstm.setDouble(4, tenant.getWallet());
 			pstm.setInt(5, tenant.getId());
 
 			// Executar a query
@@ -226,7 +226,7 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setDouble(1, tenant.getBalance());
+			pstm.setDouble(1, tenant.getWallet());
 			pstm.setInt(2, tenant.getId());
 
 			// Executar a query
@@ -317,7 +317,7 @@ public class TenantRepository implements ITenantRepository {
 				tenant.setEmail(rset.getString("email"));
 
 				// Recuperar o saldo
-				tenant.setBalance(rset.getDouble("balance"));
+				tenant.setWallet(rset.getDouble("balance"));
 
 				tenants.add(tenant);
 			}
@@ -366,7 +366,7 @@ public class TenantRepository implements ITenantRepository {
 	        	tenant.setCpf(rset.getString("cpf"));
 	        	tenant.setTelephone(rset.getString("telephone"));
 	        	tenant.setEmail(rset.getString("email"));
-	        	tenant.setBalance(rset.getDouble("balance"));
+	        	tenant.setWallet(rset.getDouble("balance"));
 	        }
 	    } catch (Exception e) {
 	        e.printStackTrace();

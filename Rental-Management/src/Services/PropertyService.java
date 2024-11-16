@@ -2,14 +2,18 @@ package services;
 // Serviço Imovel
 
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Scanner;
 
-import Enum.PropertyOccupation;
-import Enum.PropertyType;
 import containers.PropertyRepository;
 import entity.Landlord;
 import entity.Property;
+import entity.PropertyCommercial;
 import entity.PropertyResidential;
+import enums.PropertyOccupation;
+import enums.PropertyType;
+import enums.TheTypeOfBusiness;
 import exceptions.EnumLandlordException;
 import exceptions.EnumPropertyException;
 import exceptions.PropertyException;
@@ -20,58 +24,73 @@ public class PropertyService {
 	private static final Scanner scanner = new Scanner(System.in);
 	private static final PropertyRepository propertyDAO = new PropertyRepository();
 
-	// CREATE
-	public void addProperty(Landlord landlord, String address, double rentalValue, PropertyType type,
-			PropertyOccupation occupation) throws PropertyException {
-		if (landlord == null) {
-			throw new PropertyException("Erro: " + EnumLandlordException.LandlordInvalid);
-		} else if (type == null) {
-			throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidType);
-		} else if (rentalValue < 0) {
-			throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidRentalValue);
-		}
-
-		Property property = createProperty(landlord, address, rentalValue, type, occupation);
-		if (property != null) {
-			property.setLandlord(landlord);
-			property.getLandlord().setCpf(landlord.getCpf());
-			propertyDAO.propertySave(property);
-		} else {
-			System.out.println(("Erro: " + EnumPropertyException.PropertyInvalid));
-		}
-	}
-
-	private Property createProperty(Landlord landlord, String address, double rentalValue, PropertyType type,
-			PropertyOccupation occupation) throws PropertyException {
+	// ADD
+	public void add(Landlord landlord, String address, double rentalValue, PropertyType type,
+			PropertyOccupation occupation, int numberOfRooms, TheTypeOfBusiness business, boolean theLeisureArea)
+			throws PropertyException {
 
 		switch (type) {
-		case RESIDENTIAL:
-			System.out.print("\nNumeros de quartos: ");
-			int numberOfRooms = scanner.nextInt();
-			
-			System.out.print("Área de Lazer: 1.Sim | 2.Nâo");
-			System.out.print("\n| Opção: ");
-			int theLeisureArea = scanner.nextInt();
-			
-			boolean area = false;
-			if(theLeisureArea == 1) {
-				area = true;
-			}
-			
-			PropertyResidential residential = new PropertyResidential(addressFormat(address), rentalValue, type, occupation, numberOfRooms, area);
-			return new Property(residential.getAddress(), residential.getRentalValue(), residential.getType(), residential.getOccupation());
 		case COMMERCIAL:
-			System.out.print("Tipos de Negócio: 0.Outro | 1.Alimentação | 2.HEALTH | 3.AUTOMOTIVESERVICES | 4.FASHION | 5.EDUCATION ");
-			System.out.print("\n| Opção: ");
-			int TheTypeOfBusiness = scanner.nextInt();
-			
-			System.out.print("\nNumeros de Salas: ");
-			int numberOfRoom = scanner.nextInt();
-			
-			return new Property(addressFormat(address), rentalValue, type, occupation);
+
+			if (landlord == null) {
+				throw new PropertyException("Erro: " + EnumLandlordException.LandlordInvalid);
+			} else if (rentalValue < 0) {
+				throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidRentalValue);
+			}
+
+			Property prC = new Property(address, rentalValue, type, occupation, numberOfRooms, business);
+			PropertyCommercial commercial = createCommercial(prC.getLandlord(), prC.getAddress(), prC.getRentalValue(),
+					prC.getType(), prC.getOccupation(), prC.getNumberOfRooms(), prC.getBusiness());
+
+			if (commercial != null) {
+				commercial.setLandlord(landlord);
+				commercial.getLandlord().setCpf(landlord.getCpf());
+				propertyDAO.save(commercial);
+			} else {
+				System.out.println(("Erro: " + EnumPropertyException.PropertyInvalid));
+			}
+			break;
+		case RESIDENTIAL:
+
+			if (landlord == null) {
+				throw new PropertyException("Erro: " + EnumLandlordException.LandlordInvalid);
+			} else if (rentalValue < 0) {
+				throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidRentalValue);
+			}
+
+			Property prR = new Property(address, rentalValue, type, occupation, numberOfRooms, theLeisureArea);
+			PropertyResidential residential = createResidential(prR.getLandlord(), prR.getAddress(),
+					prR.getRentalValue(), prR.getType(), prR.getOccupation(), prR.getNumberOfRooms(),
+					prR.isTheLeisureArea());
+
+			if (residential != null) {
+				residential.setLandlord(landlord);
+				residential.getLandlord().setCpf(landlord.getCpf());
+				propertyDAO.save(residential);
+			} else {
+				System.out.println(("Erro: " + EnumPropertyException.PropertyInvalid));
+			}
+			break;
 		default:
-			throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidType);
+			System.out.println(("Erro: " + EnumPropertyException.PropertyInvalid));
+			break;
 		}
+
+	}
+
+	// CREATE COMMERCIAL AND RESIDENTIAL
+	public PropertyCommercial createCommercial(Landlord landlord, String address, double rentalValue, PropertyType type,
+			PropertyOccupation occupation, int numberOfRooms, TheTypeOfBusiness business) throws PropertyException {
+		return new PropertyCommercial(addressFormat(address), rentalValue, type, occupation,
+				numberOfRooms, business);
+
+	}
+
+	public PropertyResidential createResidential(Landlord landlord, String address, double rentalValue,
+			PropertyType type, PropertyOccupation occupation, int numberOfRooms, boolean theLeisureArea) {
+		return new PropertyResidential(addressFormat(address), rentalValue, type, occupation,
+				numberOfRooms, theLeisureArea);
+
 	}
 
 	// Formart
@@ -80,13 +99,22 @@ public class PropertyService {
 		return addressFormat;
 	}
 
-	// REMOVE
-	public void removeProperty(int id) {
-		propertyDAO.propertyDeleteByID(id);
+	private String walletFormat(double wallet) {
+		DecimalFormat df = new DecimalFormat("###,###.00");
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setDecimalSeparator(',');
+		dfs.setGroupingSeparator('.');
+		df.setDecimalFormatSymbols(dfs);
+		return df.format(wallet);
 	}
 
-	// LIST
-	public void listProperty() throws SQLException {
+	// REMOVE
+	public void remove(int id) {
+		propertyDAO.deleteByID(id);
+	}
+
+	// LIST 
+	public void list() throws SQLException {
 		if (propertyDAO.getProperty().isEmpty()) {
 			System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
 		} else {
@@ -94,14 +122,20 @@ public class PropertyService {
 				System.out.print("\nID Imóvel: " + p.getId() + "\n");
 				System.out.print(" | Cpf Proprietário: " + p.getLandlord().getCpf());
 				System.out.print("\n | Endereço: " + p.getAddress());
-				System.out.print("\n | Valor do Aluguel: " + p.getRentalValue());
+				System.out.print("\n | Valor do Aluguel: " + walletFormat(p.getRentalValue()));
 				System.out.print("\n | Tipo: " + p.getType());
-				System.out.print("\n | Ocupação: " + p.getOccupation() + "\n");
+				System.out.print("\n | Ocupação: " + p.getOccupation());
+				System.out.print("\n | Numeros de salas: " + p.getNumberOfRooms());
+
+				if (p.getType() == PropertyType.COMMERCIAL) {
+					System.out.print("\n | Tipo de Negócio: " + p.getBusiness() + "\n");
+				} else {
+					System.out.print("\n | Área de Lazer: " + p.isTheLeisureArea() + "\n");
+				}
 			}
 		}
 	}
 
-	// LIST
 	public void listPropertyByLandlordId(int id) throws SQLException {
 		if (propertyDAO.getProperty().isEmpty()) {
 			System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
@@ -110,15 +144,21 @@ public class PropertyService {
 				System.out.print("\nID Imóvel: " + p.getId() + "\n");
 				System.out.print(" | Cpf Proprietário: " + p.getLandlord().getCpf());
 				System.out.print("\n | Endereço: " + p.getAddress());
-				System.out.print("\n | Valor do Aluguel: " + p.getRentalValue());
+				System.out.print("\n | Valor do Aluguel: " + walletFormat(p.getRentalValue()));
 				System.out.print("\n | Tipo: " + p.getType());
-				System.out.print("\n | Ocupação: " + p.getOccupation() + "\n");
+				System.out.print("\n | Ocupação: " + p.getOccupation());
+
+				if (p.getType() == PropertyType.COMMERCIAL) {
+					System.out.print("\n | Tipo de Negócio: " + p.getBusiness() + "\n");
+				} else {
+					System.out.print("\n | Área de Lazer: " + p.isTheLeisureArea() + "\n");
+				}
 			}
 		}
 	}
 
 	// CHANGE
-	public void changeProperty(int id) throws PropertyException, SQLException {
+	public void change(int id) throws PropertyException, SQLException {
 		if (propertyDAO.getProperty().isEmpty()) {
 			System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
 		} else {
@@ -140,14 +180,14 @@ public class PropertyService {
 				String newAddress = scanner.nextLine();
 				property.setAddress(addressFormat(newAddress));
 				property.setId(id);
-				propertyDAO.propertyUpdateAddress(property);
+				propertyDAO.updateAddress(property);
 				break;
 			case 2:
 				System.out.print("Novo Valor do Aluguel: ");
 				double newRentalValue = scanner.nextDouble();
 				property.setRentalValue(newRentalValue);
 				property.setId(id);
-				propertyDAO.propertyUpdateRentalValue(property);
+				propertyDAO.updateRentalValue(property);
 				break;
 			case 3:
 				System.out.print("Novo Tipo: \n1.Residencial | 2.Comercial |");
@@ -158,12 +198,12 @@ public class PropertyService {
 					PropertyType propertyType = PropertyType.RESIDENTIAL;
 					property.setType(propertyType);
 					property.setId(id);
-					propertyDAO.propertyUpdateType(property);
+					propertyDAO.updateType(property);
 				} else if (newType == 2) {
 					PropertyType propertyType = PropertyType.COMMERCIAL;
 					property.setType(propertyType);
 					property.setId(id);
-					propertyDAO.propertyUpdateType(property);
+					propertyDAO.updateType(property);
 				} else {
 					throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidType);
 				}
@@ -177,12 +217,12 @@ public class PropertyService {
 					PropertyOccupation propertyOccupation = PropertyOccupation.UNOCCUPIED;
 					property.setOccupation(propertyOccupation);
 					property.setId(id);
-					propertyDAO.propertyUpdateOccupation(property);
+					propertyDAO.updateOccupation(property);
 				} else if (newOccupation == 2) {
 					PropertyOccupation propertyOccupation = PropertyOccupation.OCCUPIED;
 					property.setOccupation(propertyOccupation);
 					property.setId(id);
-					propertyDAO.propertyUpdateOccupation(property);
+					propertyDAO.updateOccupation(property);
 				} else {
 					throw new PropertyException("Erro: " + EnumPropertyException.PropertyInvalidOccupation);
 				}
@@ -195,7 +235,8 @@ public class PropertyService {
 		}
 	}
 
-	public Property searchProperty(int id) throws SQLException, Exception {
+	// SEARCH
+	public Property search(int id) throws SQLException, Exception {
 		Property property = null;
 		if (propertyDAO.getProperty().isEmpty()) {
 			System.out.println("Erro: " + EnumLandlordException.LandlordNoRegistered);

@@ -1,13 +1,11 @@
 package entity;
 
-// Locação (Contrato)
-
 public class Lease {
 	// ATTRIBUTES
 
 	private int id;
-	private String startDate, endDate, PropertyReturnDate;
-	private Boolean Fines;
+	private String startDate, endDate, propertyReturnDate;
+	private Boolean fines;
 	private Property property;
 	private Landlord landlord;
 	private Tenant tenant;
@@ -18,15 +16,15 @@ public class Lease {
 
 	}
 
-	public Lease(String startDate, String endDate, Landlord landlord, Property property, Tenant tenant) {
+	public Lease(String startDate, String endDate, Property property, Landlord landlord, Tenant tenant) {
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.landlord = landlord;
 		this.property = property;
+		this.landlord = landlord;
 		this.tenant = tenant;
 	}
 
-	// METODOS ESPECIAS
+	// SPECIAL METHODS
 
 	public int getId() {
 		return id;
@@ -53,19 +51,19 @@ public class Lease {
 	}
 
 	public String getPropertyReturnDate() {
-		return PropertyReturnDate;
+		return propertyReturnDate;
 	}
 
 	public void setPropertyReturnDate(String propertyReturnDate) {
-		PropertyReturnDate = propertyReturnDate;
+		this.propertyReturnDate = propertyReturnDate;
 	}
 
 	public Boolean getFines() {
-		return Fines;
+		return fines;
 	}
 
 	public void setFines(Boolean fines) {
-		Fines = fines;
+		this.fines = fines;
 	}
 
 	public Property getProperty() {
@@ -91,5 +89,4 @@ public class Lease {
 	public void setTenant(Tenant tenant) {
 		this.tenant = tenant;
 	}
-
 }

@@ -8,12 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import Enum.PropertyOccupation;
 import containers.LeaseRepository;
 import entity.Landlord;
 import entity.Lease;
 import entity.Property;
 import entity.Tenant;
+import enums.PropertyOccupation;
 import exceptions.EnumLeaseException;
 import exceptions.EnumPropertyException;
 import exceptions.LeaseException;
@@ -25,8 +25,8 @@ public class LeaseService {
 	private static final Scanner scanner = new Scanner(System.in);
 	private static final LeaseRepository leaseDAO = new LeaseRepository();
 
-	// CREATE
-	public void addLease(String startDate, String endDate, Landlord landlord, Property property, Tenant tenant)
+	// ADD
+	public void add(Landlord landlord, Property property, Tenant tenant, String startDate, String endDate)
 			throws LeaseException, ParseException {
 		if (landlord == null || property == null || tenant == null) {
 			throw new LeaseException("Erro: " + EnumLeaseException.LeaseNoRegistered);
@@ -36,15 +36,16 @@ public class LeaseService {
 			throw new LeaseException("Erro: " + EnumLeaseException.LeaseInvalidStartOrEndDate);
 		}
 
-		Lease lease = createLease(startDate, endDate, landlord, property, tenant);
+		Lease lease = create(landlord, property, tenant, startDate, endDate);
 		if (lease != null) {
-			leaseDAO.leaseSave(lease);
+			leaseDAO.save(lease);
 		} else {
 			System.out.println("Erro: " + EnumLeaseException.LeaseInvalid);
 		}
 	}
 
-	public Lease createLease(String startDate, String endDate, Landlord landlord, Property property, Tenant tenant)
+	// CREATE
+	public Lease create(Landlord landlord, Property property, Tenant tenant, String startDate, String endDate)
 			throws LeaseException, ParseException {
 		if (landlord.getCpf().equals(tenant.getCpf())) {
 			throw new LeaseException("Erro: " + EnumLeaseException.LandlordAndTenantHaveTheSameCPF);
@@ -52,20 +53,20 @@ public class LeaseService {
 			throw new LeaseException("Erro: " + EnumPropertyException.PropertyInvalidOccupation);
 		}
 		assignTenantToProperty(property, tenant);
-		return new Lease(startDate, endDate, landlord, property, tenant);
+		return new Lease(startDate, endDate, property, landlord, tenant);
 	}
-	
+
 	// Formart
 	public Date dateTimeExtensions(Date date) throws ParseException {
 		DatetimeExtensions.toString(date);
 		return date;
 	}
-	
+
 	public String dateTimeExtensionss(String date) throws ParseException {
 		DatetimeExtensions.toDate(date);
 		return date;
 	}
-	
+
 	// Assign Tenant To Property
 	public void assignTenantToProperty(Property property, Tenant tenant) {
 		if (property.getTenant() != null) {
@@ -84,7 +85,7 @@ public class LeaseService {
 
 		System.out.println("\n| Inquilino " + tenant.getName() + "\n| Cadastrado ao Imóvel " + property.getAddress());
 	}
-	
+
 	// Assign Property To Landlord
 	public void assignPropertyToLandlord(Landlord landlord, Property property) {
 		if (property.getLandlord() != null) {
@@ -104,12 +105,17 @@ public class LeaseService {
 				"\n| Imóvel " + property.getAddress() + "\n| Cadastrado ao proprietário " + landlord.getName());
 	}
 
-	public void removeLease(int id) {
-		leaseDAO.LeaseDeleteByID(id);
+	// REMOVE
+	public void remove(int id) {
+		Lease lease = new Lease();
+		lease.setPropertyReturnDate(
+				"\nO prazo geral para desocupação de um imóvel alugado é de 30 dias, contados a partir da data em que o proprietário comunica o inquilino de sua intenção de encerrar o contrato.\n");
+		lease.getPropertyReturnDate();
+		leaseDAO.deleteByID(id);
 	}
 
 	// LIST
-	public void listLease() throws SQLException {
+	public void list() throws SQLException {
 		if (leaseDAO.getLease().isEmpty()) {
 			System.out.println(("Erro: " + EnumPropertyException.PropertyNoRegistered));
 		} else {
@@ -119,13 +125,13 @@ public class LeaseService {
 				System.out.print("\n | Inquilino: " + l.getTenant().getCpf());
 				System.out.print("\n | ID Imóvel: " + l.getProperty().getId());
 				System.out.print("\n | Data de Inicio: " + l.getStartDate().toString());
-				System.out.print("\n | Data de Fim: " + l.getEndDate().toString() + "\n");
+				System.out.print("\n | Data de Fim: " + l.getEndDate().toString());
 			}
 		}
 	}
 
 	// CHANGE
-	public void changeLease(int id) throws LeaseException, ParseException, SQLException {
+	public void change(int id) throws LeaseException, ParseException, SQLException {
 		if (leaseDAO.getLease().isEmpty()) {
 			System.out.println(("Erro: " + EnumLeaseException.LeaseNoRegistered));
 		} else {
@@ -145,14 +151,14 @@ public class LeaseService {
 				String newStartDate = scanner.nextLine();
 				lease.setStartDate(dateTimeExtensionss(newStartDate));
 				lease.setId(id);
-				leaseDAO.LeaseUpdateStartDate(lease);
+				leaseDAO.updateStartDate(lease);
 				break;
 			case 2:
 				System.out.print("\nNova Data de Fim (YYYY/MM/DD): ");
 				String newEndDate = scanner.nextLine();
 				lease.setEndDate(dateTimeExtensionss(newEndDate));
 				lease.setId(id);
-				leaseDAO.LeaseUpdateEndDate(lease);
+				leaseDAO.updateEndDate(lease);
 				break;
 			default:
 				System.out.println("\nContrato não foi atualizado!");
@@ -161,18 +167,19 @@ public class LeaseService {
 			}
 		}
 	}
-	
+
+	// SEARCH
 	public Lease searchLease(int id) throws SQLException, Exception {
 		Lease lease = null;
-	    if (leaseDAO.getLease().isEmpty()) {
-	        System.out.println("Erro: " + EnumLeaseException.LeaseNoRegistered);
-	    } else {
-	    	lease = leaseDAO.getLeaseById(id);
-	        if (lease == null) {
-	        	System.out.println("Erro: Contrato não encontrado.");
-	        	
-	        }
-	    }
-	    return lease;
+		if (leaseDAO.getLease().isEmpty()) {
+			System.out.println("Erro: " + EnumLeaseException.LeaseNoRegistered);
+		} else {
+			lease = leaseDAO.getLeaseById(id);
+			if (lease == null) {
+				System.out.println("Erro: Contrato não encontrado.");
+			}
+		}
+		return lease;
 	}
+
 }

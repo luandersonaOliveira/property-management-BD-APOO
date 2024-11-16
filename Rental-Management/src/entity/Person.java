@@ -1,12 +1,14 @@
 package entity;
 
-import Enum.PersonPosition;
+import enums.PersonsPosition;
 
 public class Person {
 	// ATTRIBUTES
+
 	private int id;
 	private String name, cpf, telephone, email;
-	private PersonPosition position;
+	private double wallet;
+	private PersonsPosition positions;
 
 	// CONSTRUCTOR
 
@@ -14,15 +16,16 @@ public class Person {
 
 	}
 
-	public Person(String name, String cpf, String telephone, String email, PersonPosition position) {
-		this.setName(name);
+	public Person(String name, String cpf, String telephone, String email, double wallet,PersonsPosition positions) {
+		this.name = name;
 		this.cpf = cpf;
-		this.setEmail(email);
-		this.setTelephone(telephone);
-		this.setPosition(position);
+		this.telephone = telephone;
+		this.email = email;
+		this.wallet = (wallet);
+		this.positions = positions;
 	}
 
-	// METODOS ESPECIAS
+	// SPECIAL METHODS
 
 	public int getId() {
 		return id;
@@ -48,14 +51,6 @@ public class Person {
 		this.cpf = cpf;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public String getTelephone() {
 		return telephone;
 	}
@@ -64,12 +59,28 @@ public class Person {
 		this.telephone = telephone;
 	}
 
-	public PersonPosition getPosition() {
-		return position;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setPosition(PersonPosition position) {
-		this.position = position;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public double getWallet() {
+		return wallet;
+	}
+
+	public void setWallet(double wallet) {
+		this.wallet = wallet;
+	}
+
+	public PersonsPosition getPositions() {
+		return positions;
+	}
+
+	public void setPositions(PersonsPosition positions) {
+		this.positions = positions;
 	}
 
 }

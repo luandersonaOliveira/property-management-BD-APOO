@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Interface.ILandlordRepository;
+import interfaces.ILandlordRepository;
 import connection.PropertyConnections;
 import entity.Landlord;
 

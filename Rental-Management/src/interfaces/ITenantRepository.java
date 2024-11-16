@@ -1,4 +1,4 @@
-package Interface;
+package interfaces;
 // Interface Repositório de Inquilinos
 
 import java.sql.SQLException;

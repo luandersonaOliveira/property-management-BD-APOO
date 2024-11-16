@@ -1,9 +1,7 @@
 package entity;
 
-import Enum.PaymentMethod;
-import Enum.PaymentStatus;
-
-// Pagamento
+import enums.PaymentMethod;
+import enums.PaymentStatus;
 
 public class Payment {
 	// ATTRIBUTES
@@ -29,7 +27,7 @@ public class Payment {
 		this.lease = lease;
 	}
 
-	// METODOS ESPECIAS
+	// SPECIAL METHODS
 
 	public int getId() {
 		return id;

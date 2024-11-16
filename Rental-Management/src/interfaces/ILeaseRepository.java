@@ -1,4 +1,4 @@
-package Interface;
+package interfaces;
 // Interface Repositório de Locação (Contratos)
 
 import java.sql.SQLException;
@@ -8,15 +8,15 @@ import entity.Lease;
 
 public interface ILeaseRepository {
 	
-	public void leaseSave(Lease lease);
+	public void save(Lease lease);
 	
-	public void LeaseUpdateAll(Lease lease);
+	public void updateAll(Lease lease);
 	
-	public void LeaseUpdateStartDate(Lease lease);
+	public void updateStartDate(Lease lease);
 	
-	public void LeaseUpdateEndDate(Lease lease);
+	public void updateEndDate(Lease lease);
 
-	public void LeaseDeleteByID(int id);
+	public void deleteByID(int id);
 	
 	public List<Lease> getLease() throws SQLException;
 	

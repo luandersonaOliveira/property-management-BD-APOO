@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Enum.PropertyOccupation;
-import Enum.PropertyType;
-import Interface.IPropertyRepository;
+import enums.PropertyOccupation;
+import enums.PropertyType;
+import interfaces.IPropertyRepository;
 import connection.PropertyConnections;
 import entity.Landlord;
 import entity.Property;
@@ -18,7 +18,7 @@ import entity.Property;
 public class PropertyRepository implements IPropertyRepository {
 
 	@Override
-	public void propertySave(Property property) {
+	public void save(Property property) {
 		String sql = "INSERT INTO property (address, rental_value, type, occupation, cpf_landlord) VALUES (?, ?, ?, ?, ?)";
 
 		Connection conn = null;
@@ -56,7 +56,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyUpdateAll(Property property) {
+	public void updateAll(Property property) {
 		String sql = "UPDATE property SET address = ?, rental_value = ?, type = ?, occupation = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -97,7 +97,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyUpdateAddress(Property property) {
+	public void updateAddress(Property property) {
 		String sql = "UPDATE property SET address = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -135,7 +135,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyUpdateRentalValue(Property property) {
+	public void updateRentalValue(Property property) {
 		String sql = "UPDATE property SET rental_value = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -173,7 +173,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyUpdateType(Property property) {
+	public void updateType(Property property) {
 		String sql = "UPDATE property SET type = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -211,7 +211,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyUpdateOccupation(Property property) {
+	public void updateOccupation(Property property) {
 		String sql = "UPDATE property SET occupation = ?" + "WHERE id = ?";
 
 		Connection conn = null;
@@ -249,7 +249,7 @@ public class PropertyRepository implements IPropertyRepository {
 	}
 
 	@Override
-	public void propertyDeleteByID(int id) {
+	public void deleteByID(int id) {
 		String sql = "DELETE FROM property  WHERE id = ?";
 
 		Connection conn = null;
