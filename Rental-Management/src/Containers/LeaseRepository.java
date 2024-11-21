@@ -33,7 +33,7 @@ public class LeaseRepository implements ILeaseRepository {
 				pstm.setInt(3, lease.getProperty().getId());
 				pstm.setString(4, lease.getLandlord().getCpf());
 				pstm.setString(5, lease.getTenant().getCpf());
-				
+
 				pstm.execute();
 				System.out.println("\nContrato adicionado com sucesso!");
 			} else {

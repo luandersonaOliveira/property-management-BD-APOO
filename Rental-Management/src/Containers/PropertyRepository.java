@@ -19,7 +19,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void save(Property property) {
-		String sql = "INSERT INTO property (address, rental_value, type, occupation, cpf_landlord) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO imovel (cpfProprietario, endereco, valorDoAluguel, tipo, status, numeroDeQuartos) VALUES (?, ?, ?, ?, ?, ?)";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -28,11 +28,12 @@ public class PropertyRepository implements IPropertyRepository {
 
 			if (conn != null) {
 				pstm = conn.prepareStatement(sql);
-				pstm.setString(1, property.getAddress());
-				pstm.setDouble(2, property.getRentalValue());
-				pstm.setString(3, property.getType().toString());
-				pstm.setString(4, property.getOccupation().toString());
-				pstm.setString(5, property.getLandlord().getCpf()); // Garantir que o Landlord está associado
+				pstm.setString(1, property.getLandlord().getCpf());
+				pstm.setString(2, property.getAddress());
+				pstm.setDouble(3, property.getRentalValue());
+				pstm.setString(4, property.getType().toString());
+				pstm.setString(5, property.getOccupation().toString());
+				pstm.setInt(6, property.getNumberOfRooms());
 
 				pstm.execute();
 				System.out.println("\nImóvel adicionado com sucesso!");
@@ -57,7 +58,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateAll(Property property) {
-		String sql = "UPDATE property SET address = ?, rental_value = ?, type = ?, occupation = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -74,7 +75,8 @@ public class PropertyRepository implements IPropertyRepository {
 			pstm.setDouble(2, property.getRentalValue());
 			pstm.setString(3, property.getType().toString());
 			pstm.setString(4, property.getOccupation().toString());
-			pstm.setInt(5, property.getId());
+			pstm.setInt(5, property.getNumberOfRooms());
+			pstm.setInt(6, property.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -98,7 +100,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateAddress(Property property) {
-		String sql = "UPDATE property SET address = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET endereco = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -136,7 +138,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateRentalValue(Property property) {
-		String sql = "UPDATE property SET rental_value = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET valorDoAluguel = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -174,7 +176,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateType(Property property) {
-		String sql = "UPDATE property SET type = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET tipo = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -212,7 +214,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateOccupation(Property property) {
-		String sql = "UPDATE property SET occupation = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET status = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -250,7 +252,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM property  WHERE id = ?";
+		String sql = "DELETE FROM imovel  WHERE id = ?";
 
 		Connection conn = null;
 
@@ -283,7 +285,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public List<Property> getProperty() throws SQLException {
-		String sql = "SELECT * FROM property";
+		String sql = "SELECT * FROM imovel";
 
 		List<Property> propertys = new ArrayList<Property>();
 
@@ -320,7 +322,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 				// Recuperar o cpf_Landlord e associar ao Landlord
 				Landlord landlord = new Landlord();
-				landlord.setCpf(rset.getString("cpf_landlord"));
+				landlord.setCpf(rset.getString("cpfProprietario"));
 				property.setLandlord(landlord);
 
 				propertys.add(property);
@@ -350,7 +352,7 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public Property getPropertyById(int id) throws SQLException {
-		String sql = "SELECT * FROM property WHERE id = ?";
+		String sql = "SELECT * FROM imovel WHERE id = ?";
 		Property property = null;
 
 		Connection conn = null;
@@ -368,16 +370,16 @@ public class PropertyRepository implements IPropertyRepository {
 				property.setId(rset.getInt("id"));
 				property.setAddress(rset.getString("address"));
 				property.setRentalValue(rset.getDouble("rental_value"));
-				
-				PropertyType propertyType = PropertyType.valueOf(rset.getString("type").toUpperCase());
+
+				PropertyType propertyType = PropertyType.valueOf(rset.getString("tipo").toUpperCase());
 				property.setType(propertyType);
-				
+
 				PropertyOccupation propertyOccupation = PropertyOccupation
 						.valueOf(rset.getString("occupation").toUpperCase());
 				property.setOccupation(propertyOccupation);
-				
+
 				Landlord landlord = new Landlord();
-				landlord.setCpf(rset.getString("cpf_landlord"));
+				landlord.setCpf(rset.getString("cpfProprietario"));
 				property.setLandlord(landlord);
 			}
 		} catch (Exception e) {
@@ -400,10 +402,10 @@ public class PropertyRepository implements IPropertyRepository {
 
 		return property;
 	}
-	
+
 	@Override
 	public List<Property> getPropertyByLandlordId(int id) throws SQLException {
-		String sql = "SELECT p.id, p.address, p.rental_value, p.type, p.occupation, p.cpf_landlord FROM landlord l JOIN property p ON l.cpf = p.cpf_landlord WHERE l.id = ? ORDER BY l.id";
+		String sql = "SELECT i.id, i.address, i.rental_value, i.type, i.occupation, i.cpf_landlord FROM proprietario p JOIN property i ON p.cpf = i.cpf_proprietario WHERE p.id = ? ORDER BY p.id";
 		List<Property> propertys = new ArrayList<Property>();
 
 		Connection conn = null;
@@ -417,22 +419,22 @@ public class PropertyRepository implements IPropertyRepository {
 			pstm = conn.prepareStatement(sql);
 			pstm.setInt(1, id); // Define o ID do proprietário
 			rset = pstm.executeQuery();
-			
-			while(rset.next()) {
+
+			while (rset.next()) {
 				Property property = null;
 				property = new Property();
 				property.setId(rset.getInt("id"));
 				property.setAddress(rset.getString("address"));
 				property.setRentalValue(rset.getDouble("rental_value"));
-				PropertyType propertyType = PropertyType.valueOf(rset.getString("type").toUpperCase());
+				PropertyType propertyType = PropertyType.valueOf(rset.getString("tipo").toUpperCase());
 				property.setType(propertyType);
 				PropertyOccupation propertyOccupation = PropertyOccupation
-						.valueOf(rset.getString("occupation").toUpperCase());
+						.valueOf(rset.getString("status").toUpperCase());
 				property.setOccupation(propertyOccupation);
 				Landlord landlord = new Landlord();
-				landlord.setCpf(rset.getString("cpf_landlord"));
+				landlord.setCpf(rset.getString("cpfProprietario"));
 				property.setLandlord(landlord);
-				
+
 				propertys.add(property);
 			}
 		} catch (Exception e) {

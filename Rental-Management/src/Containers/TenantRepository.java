@@ -16,7 +16,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void save(Tenant tenant) {
-		String sql = "INSERT INTO tenant (name, cpf, telephone, email, balance) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO inquilino (nome, cpf, telefone, email, saldo) VALUES (?, ?, ?, ?, ?)";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -58,7 +58,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateAll(Tenant tenant) {
-		String sql = "UPDATE tenant SET name = ?, telephone = ?, email = ?, balance = ? " + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET nome = ?, telefone = ?, email = ?, saldo = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -99,7 +99,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateName(Tenant tenant) {
-		String sql = "UPDATE tenant SET name = ?" + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET nome = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -137,7 +137,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateTelephone(Tenant tenant) {
-		String sql = "UPDATE tenant SET telephone = ?" + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET telefone = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -175,7 +175,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateEmail(Tenant tenant) {
-		String sql = "UPDATE tenant SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET email = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -212,8 +212,8 @@ public class TenantRepository implements ITenantRepository {
 	}
 
 	@Override
-	public void updateBalance(Tenant tenant) {
-		String sql = "UPDATE tenant SET balance = ? " + "WHERE id = ?";
+	public void updateWallet(Tenant tenant) {
+		String sql = "UPDATE inquilino SET saldo = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -251,7 +251,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM tenant  WHERE id = ?";
+		String sql = "DELETE FROM inquilino WHERE id = ?";
 
 		Connection conn = null;
 
@@ -284,7 +284,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public List<Tenant> getTenants() throws SQLException {
-		String sql = "SELECT * FROM tenant";
+		String sql = "SELECT * FROM inquilino";
 
 		List<Tenant> tenants = new ArrayList<Tenant>();
 
@@ -305,19 +305,19 @@ public class TenantRepository implements ITenantRepository {
 				tenant.setId(rset.getInt("id"));
 
 				// Recuperar o nome
-				tenant.setName(rset.getString("name"));
+				tenant.setName(rset.getString("nome"));
 
 				// Recuoerar o cpf
 				tenant.setCpf(rset.getString("cpf"));
 
 				// Recuoerar o telefone
-				tenant.setTelephone(rset.getString("telephone"));
+				tenant.setTelephone(rset.getString("telefone"));
 
 				// Recuoerar o email
 				tenant.setEmail(rset.getString("email"));
 
 				// Recuperar o saldo
-				tenant.setWallet(rset.getDouble("balance"));
+				tenant.setWallet(rset.getDouble("saldo"));
 
 				tenants.add(tenant);
 			}
@@ -346,47 +346,47 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public Tenant getTenantById(int id) throws SQLException {
-		String sql = "SELECT * FROM tenant WHERE id = ?";
+		String sql = "SELECT * FROM inquilino WHERE id = ?";
 		Tenant tenant = null;
 
-	    Connection conn = null;
-	    PreparedStatement pstm = null;
-	    ResultSet rset = null;
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rset = null;
 
-	    try {
-	        conn = PropertyConnections.createConnectionToMySQL();
-	        pstm = conn.prepareStatement(sql);
-	        pstm.setInt(1, id); // Define o ID do proprietário
-	        rset = pstm.executeQuery();
+		try {
+			conn = PropertyConnections.createConnectionToMySQL();
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, id); // Define o ID do proprietário
+			rset = pstm.executeQuery();
 
-	        if (rset.next()) {
-	        	tenant = new Tenant();
-	        	tenant.setId(rset.getInt("id"));
-	        	tenant.setName(rset.getString("name"));
-	        	tenant.setCpf(rset.getString("cpf"));
-	        	tenant.setTelephone(rset.getString("telephone"));
-	        	tenant.setEmail(rset.getString("email"));
-	        	tenant.setWallet(rset.getDouble("balance"));
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rset != null) {
-	                rset.close();
-	            }
-	            if (pstm != null) {
-	                pstm.close();
-	            }
-	            if (conn != null) {
-	                conn.close();
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+			if (rset.next()) {
+				tenant = new Tenant();
+				tenant.setId(rset.getInt("id"));
+				tenant.setName(rset.getString("nome"));
+				tenant.setCpf(rset.getString("cpf"));
+				tenant.setTelephone(rset.getString("telefone"));
+				tenant.setEmail(rset.getString("email"));
+				tenant.setWallet(rset.getDouble("saldo"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rset != null) {
+					rset.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return tenant;
+		return tenant;
 	}
 
 }

@@ -5,8 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Scanner;
 
-import containers.LandlordRepository;
-import containers.TenantRepository;
+import containers.PersonRepository;
 import entity.Landlord;
 import entity.Person;
 import entity.Tenant;
@@ -20,8 +19,7 @@ public class PersonService {
 	// ATTRIBUTES
 
 	private static final Scanner scanner = new Scanner(System.in);
-	private static final TenantRepository tenantDAO = new TenantRepository();
-	private static final LandlordRepository landlordDAO = new LandlordRepository();
+	private static final PersonRepository personDAO = new PersonRepository();
 
 	// ADD LANDLORD AND TENANT
 
@@ -40,7 +38,7 @@ public class PersonService {
 					personL.getEmail(), personL.getWallet(), personL.getPositions());
 
 			if (landlord != null) {
-				landlordDAO.save(landlord);
+				personDAO.saveLandlord(landlord);
 			} else {
 				throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalid);
 			}
@@ -59,7 +57,7 @@ public class PersonService {
 					personT.getEmail(), personT.getWallet(), personT.getPositions());
 
 			if (tenant != null) {
-				tenantDAO.save(tenant);
+				personDAO.saveTenant(tenant);
 			} else {
 				throw new TenantException("Erro: " + EnumTenantException.TenantInvalid);
 			}
@@ -158,20 +156,20 @@ public class PersonService {
 	}
 
 	// REMOVE LANDLORD AND TENANT
-	public void removeTenant(int id) {
-		tenantDAO.deleteByID(id);
-	}
-
 	public void removeLandlord(int id) {
-		landlordDAO.deleteByID(id);
+		personDAO.deleteLandlordByID(id);
+	}
+	
+	public void removeTenant(int id) {
+		personDAO.deleteTenantByID(id);
 	}
 
 	// LIST LANDLORD AND TENANT
 	public void listLandlord() throws SQLException {
-		if (landlordDAO.getLandlords().isEmpty()) {
+		if (personDAO.getLandlords().isEmpty()) {
 			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
 		} else {
-			for (Landlord l : landlordDAO.getLandlords()) {
+			for (Landlord l : personDAO.getLandlords()) {
 				System.out.print("\nID Proprietário: " + l.getId() + "\n");
 				System.out.print(" | Nome: " + l.getName());
 				System.out.print(" | CPF: " + l.getCpf());
@@ -182,10 +180,10 @@ public class PersonService {
 	}
 
 	public void listTenant() throws SQLException {
-		if (tenantDAO.getTenants().isEmpty()) {
+		if (personDAO.getTenants().isEmpty()) {
 			System.out.println(("Erro: " + EnumTenantException.TenantNoRegistered));
 		} else {
-			for (Tenant t : tenantDAO.getTenants()) {
+			for (Tenant t : personDAO.getTenants()) {
 				System.out.print("\nID Inquilino: " + t.getId() + "\n");
 				System.out.print(" | Nome: " + t.getName());
 				System.out.print(" | CPF: " + t.getCpf());
@@ -198,10 +196,10 @@ public class PersonService {
 
 	// CHANGE LANDLORD AND TENANT
 	public void changeLandlord(int id) throws LandlordException, SQLException, TenantException {
-		if (landlordDAO.getLandlords().isEmpty()) {
+		if (personDAO.getLandlords().isEmpty()) {
 			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
 		} else {
-			if (id <= 0 || id > landlordDAO.getLandlords().size()) {
+			if (id <= 0 || id > personDAO.getLandlords().size()) {
 				throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalidIndex);
 			}
 
@@ -219,21 +217,21 @@ public class PersonService {
 				String newName = scanner.nextLine();
 				landlord.setName(nameFormart(newName));
 				landlord.setId(id);
-				landlordDAO.updateName(landlord);
+				personDAO.updateLandlordName(landlord);
 				break;
 			case 2:
 				System.out.print("Novo Telefone: ");
 				String newTelephone = scanner.nextLine();
 				landlord.setTelephone(telephoneFormat(newTelephone));
 				landlord.setId(id);
-				landlordDAO.updateTelephone(landlord);
+				personDAO.updateLandlordTelephone(landlord);
 				break;
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();
 				landlord.setEmail(newEmail);
 				landlord.setId(id);
-				landlordDAO.updateEmail(landlord);
+				personDAO.updateLandlordEmail(landlord);
 				break;
 			default:
 				System.out.println("\nProprietário não foi atualizado!");
@@ -244,10 +242,10 @@ public class PersonService {
 	}
 
 	public void changeTenant(int id) throws TenantException, SQLException {
-		if (tenantDAO.getTenants().isEmpty()) {
+		if (personDAO.getTenants().isEmpty()) {
 			System.out.println(("Erro: " + EnumTenantException.TenantNoRegistered));
 		} else {
-			if (id <= 0 || id > tenantDAO.getTenants().size()) {
+			if (id <= 0 || id > personDAO.getTenants().size()) {
 				throw new TenantException("Erro: " + EnumTenantException.TenantInvalidIndex);
 			}
 
@@ -265,28 +263,28 @@ public class PersonService {
 				String newName = scanner.nextLine();
 				tenant.setName(nameFormart(newName));
 				tenant.setId(id);
-				tenantDAO.updateName(tenant);
+				personDAO.updateTenantName(tenant);
 				break;
 			case 2:
 				System.out.print("Novo Telefone: ");
 				String newTelephone = scanner.nextLine();
 				tenant.setTelephone(telephoneFormat(newTelephone));
 				tenant.setId(id);
-				tenantDAO.updateTelephone(tenant);
+				personDAO.updateLandlordTelephone(null);
 				break;
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();
 				tenant.setEmail(newEmail);
 				tenant.setId(id);
-				tenantDAO.updateEmail(tenant);
+				personDAO.updateTenantEmail(tenant);
 				break;
 			case 4:
 				System.out.print("Novo Saldo: ");
 				double newWallet = scanner.nextDouble();
 				tenant.setWallet(newWallet);
 				tenant.setId(id);
-				tenantDAO.updateBalance(tenant);
+				personDAO.updateTenantWallet(tenant);
 				break;
 			default:
 				System.out.println("\nInquilino não foi atualizado!");
@@ -299,10 +297,10 @@ public class PersonService {
 	// SEARCH LANDLORD AND TENANT
 	public Landlord searchLandlord(int id) throws SQLException, Exception {
 		Landlord landlord = null;
-		if (landlordDAO.getLandlords().isEmpty()) {
+		if (personDAO.getLandlords().isEmpty()) {
 			System.out.println("Erro: " + EnumLandlordException.LandlordNoRegistered);
 		} else {
-			landlord = landlordDAO.getLandlordById(id);
+			landlord = personDAO.getLandlordById(id);
 			if (landlord == null) {
 				System.out.println("Erro: Proprietário não encontrado.");
 			}
@@ -312,10 +310,10 @@ public class PersonService {
 
 	public Tenant searchTenant(int id) throws SQLException, Exception {
 		Tenant tenant = null;
-		if (tenantDAO.getTenants().isEmpty()) {
+		if (personDAO.getTenants().isEmpty()) {
 			System.out.println("Erro: " + EnumTenantException.TenantNoRegistered);
 		} else {
-			tenant = tenantDAO.getTenantById(id);
+			tenant = personDAO.getTenantById(id);
 			if (tenant == null) {
 				System.out.println("Erro: Inquilino não encontrado.");
 			}

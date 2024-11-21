@@ -389,7 +389,7 @@ public class Main {
 
 				Lease lease = new Lease(startDate, endDate, property, property.getLandlord(), tenant);
 
-				leaseService.add(property.getLandlord(), property, tenant, lease.getStartDate(),
+				leaseService.add	(property.getLandlord(), property, tenant, lease.getStartDate(),
 						lease.getEndDate());
 			} else {
 				System.out.println("\nErro: Proprietário não foi cadastrado!");

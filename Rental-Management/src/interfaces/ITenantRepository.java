@@ -17,7 +17,7 @@ public interface ITenantRepository {
 
 	public void updateEmail(Tenant tenant);
 
-	public void updateBalance(Tenant tenant);
+	public void updateWallet(Tenant tenant);
 
 	public void deleteByID(int id);
 

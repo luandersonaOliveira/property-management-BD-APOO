@@ -8,15 +8,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import interfaces.ILandlordRepository;
 import connection.PropertyConnections;
 import entity.Landlord;
+import interfaces.ILandlordRepository;
 
 public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void save(Landlord landlord) {
-		String sql = "INSERT INTO landlord (name, cpf, telephone, email) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO proprietario (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
+		// person and landlord
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -57,7 +58,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateAll(Landlord landlord) {
-		String sql = "UPDATE landlord SET name = ?, telephone = ?, email = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET nome = ?, telefone = ?, email = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -97,7 +98,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateName(Landlord landlord) {
-		String sql = "UPDATE landlord SET name = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET nome = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -135,7 +136,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateTelephone(Landlord landlord) {
-		String sql = "UPDATE landlord SET telephone = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET telefone = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -173,7 +174,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateEmail(Landlord landlord) {
-		String sql = "UPDATE landlord SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET email = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -211,7 +212,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM landlord  WHERE id = ?";
+		String sql = "DELETE FROM proprietario WHERE id = ?";
 
 		Connection conn = null;
 
@@ -244,7 +245,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public List<Landlord> getLandlords() throws SQLException {
-		String sql = "SELECT * FROM landlord";
+		String sql = "SELECT * FROM proprietario";
 
 		List<Landlord> landlords = new ArrayList<Landlord>();
 
@@ -265,13 +266,13 @@ public class LandlordRepository implements ILandlordRepository {
 				landlord.setId(rset.getInt("id"));
 
 				// Recuperar o nome
-				landlord.setName(rset.getString("name"));
+				landlord.setName(rset.getString("nome"));
 
 				// Recuoerar o cpf
 				landlord.setCpf(rset.getString("cpf"));
 
 				// Recuoerar o telefone
-				landlord.setTelephone(rset.getString("telephone"));
+				landlord.setTelephone(rset.getString("telefone"));
 
 				// Recuoerar o email
 				landlord.setEmail(rset.getString("email"));
@@ -303,46 +304,46 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public Landlord getLandlordById(int id) throws SQLException {
-		String sql = "SELECT * FROM landlord WHERE id = ?";
-	    Landlord landlord = null;
+		String sql = "SELECT * FROM proprietario WHERE id = ?";
+		Landlord landlord = null;
 
-	    Connection conn = null;
-	    PreparedStatement pstm = null;
-	    ResultSet rset = null;
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		ResultSet rset = null;
 
-	    try {
-	        conn = PropertyConnections.createConnectionToMySQL();
-	        pstm = conn.prepareStatement(sql);
-	        pstm.setInt(1, id); // Define o ID do proprietário
-	        rset = pstm.executeQuery();
+		try {
+			conn = PropertyConnections.createConnectionToMySQL();
+			pstm = conn.prepareStatement(sql);
+			pstm.setInt(1, id); // Define o ID do proprietário
+			rset = pstm.executeQuery();
 
-	        if (rset.next()) {
-	            landlord = new Landlord();
-	            landlord.setId(rset.getInt("id"));
-	            landlord.setName(rset.getString("name"));
-	            landlord.setCpf(rset.getString("cpf"));
-	            landlord.setTelephone(rset.getString("telephone"));
-	            landlord.setEmail(rset.getString("email"));
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            if (rset != null) {
-	                rset.close();
-	            }
-	            if (pstm != null) {
-	                pstm.close();
-	            }
-	            if (conn != null) {
-	                conn.close();
-	            }
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+			if (rset.next()) {
+				landlord = new Landlord();
+				landlord.setId(rset.getInt("id"));
+				landlord.setName(rset.getString("nome"));
+				landlord.setCpf(rset.getString("cpf"));
+				landlord.setTelephone(rset.getString("telefone"));
+				landlord.setEmail(rset.getString("email"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rset != null) {
+					rset.close();
+				}
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return landlord;
+		return landlord;
 	}
 
 }
