@@ -221,6 +221,38 @@ public class Main {
 			}
 		} while (!exit);
 	}
+	
+	// MENU PAYMENT
+	private static void menuPayment() throws Exception {
+		boolean exit = false;
+		do {
+			System.out.println("\n--------------------------");
+			System.out.println("| Menu Pagamento: ");
+			System.out.println("--------------------------");
+			System.out.println("| 0.Nenhum.");
+			System.out.println("| 1.Para Criar .");
+			System.out.println("| 2.Para Checar .");
+			System.out.println("| 3.Para Editar .");
+			System.out.println("--------------------------");
+			System.out.print("\n| Opção: ");
+			int option = scanner.nextInt();
+			scanner.nextLine();
+			switch (option) {
+			case 1:
+				
+				break;
+			case 2:
+				
+				break;
+			case 3:
+				
+				break;
+			case 0:
+				exit = true;
+				break;
+			}
+		} while (!exit);
+	}
 
 	// CREATE TENANTS
 	private static void createTenants() throws TenantException, LandlordException, PropertyException {
@@ -229,22 +261,28 @@ public class Main {
 			String name = scanner.nextLine();
 			System.out.print("CPF: ");
 			String cpf = scanner.nextLine();
-			System.out.print("Primeiro Telefone: ");
-			String telephone1 = scanner.nextLine();
-			System.out.print("Segundo Telefone: ");
-			String telephone2 = scanner.nextLine();
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 			System.out.print("Saldo: ");
 			double wallet = scanner.nextDouble();
 
 			Person person = new Person(name, cpf, email, wallet, PersonsPosition.TENANT);
-			Telephone telephone = new Telephone(telephone1, telephone2, person);
 
 			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
 					person.getPositions());
-
-			telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());
+			
+			scanner.nextLine();
+			if(person != null) {
+				System.out.print("\nPrimeiro Telefone: ");
+				String telephone1 = scanner.nextLine();
+				
+				System.out.print("Segundo Telefone: ");
+				String telephone2 = scanner.nextLine();
+				
+				Telephone telephone = new Telephone(telephone1, telephone2, person);
+				telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());				
+			}
+			
 
 		} catch (TenantException e) {
 			System.out.println("\n" + e.getMessage());
@@ -260,14 +298,14 @@ public class Main {
 			String cpf = scanner.nextLine();
 			System.out.print("Telefone: ");
 			System.out.print("Primeiro Telefone: ");
-			String telephone1 = scanner.nextLine();
+			String telephone3 = scanner.nextLine();
 			System.out.print("Segundo Telefone: ");
-			String telephone2 = scanner.nextLine();
+			String telephone4 = scanner.nextLine();
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 
 			Person person = new Person(name, cpf, email, 0, PersonsPosition.LANDLORD);
-			Telephone telephone = new Telephone(telephone1, telephone2, person);
+			Telephone telephone = new Telephone(telephone3, telephone4, person);
 
 			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
 					person.getPositions());

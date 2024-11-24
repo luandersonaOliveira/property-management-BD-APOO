@@ -13,9 +13,11 @@ import entity.PropertyCommercial;
 import enums.PropertyOccupation;
 import enums.PropertyType;
 import enums.TheTypeOfBusiness;
+import interfaces.IPropertyCommercial;
 
-public class PropertyCommercialRepository {
+public class PropertyCommercialRepository implements IPropertyCommercial {
 
+	@Override
 	public void save(PropertyCommercial commercial) {
 		String sql = "INSERT INTO imovel_comercial (cpfProprietario, endereco, valorDoAluguel, tipo, status, numeroDeQuartos, tiposNegocio) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -53,7 +55,8 @@ public class PropertyCommercialRepository {
 			}
 		}
 	}
-
+	
+	@Override
 	public void updateAll(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?, tipoNegocio = ?"
 				+ "WHERE id = ?";
@@ -96,6 +99,7 @@ public class PropertyCommercialRepository {
 		}
 	}
 
+	@Override
 	public void updateAddress(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET endereco = ?" + "WHERE id = ?";
 
@@ -132,6 +136,7 @@ public class PropertyCommercialRepository {
 		}
 	}
 
+	@Override
 	public void updateRentalValue(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET valorDoAluguel = ?" + "WHERE id = ?";
 
@@ -167,7 +172,8 @@ public class PropertyCommercialRepository {
 			}
 		}
 	}
-
+	
+	@Override
 	public void updateType(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET tipo = ?" + "WHERE id = ?";
 
@@ -204,6 +210,7 @@ public class PropertyCommercialRepository {
 		}
 	}
 
+	@Override
 	public void updateOccupation(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET status = ?" + "WHERE id = ?";
 
@@ -240,6 +247,7 @@ public class PropertyCommercialRepository {
 		}
 	}
 
+	@Override
 	public void updateBusiness(PropertyCommercial commercial) {
 		String sql = "UPDATE imovel_comercial SET tiposNegocio = ?" + "WHERE id = ?";
 
@@ -275,7 +283,8 @@ public class PropertyCommercialRepository {
 			}
 		}
 	}
-
+	
+	@Override
 	public void deleteByID(int id) {
 		String sql = "DELETE FROM imovel_comercial WHERE id = ?";
 
@@ -307,6 +316,7 @@ public class PropertyCommercialRepository {
 		}
 	}
 
+	@Override
 	public List<PropertyCommercial> getProperty() throws SQLException {
 		String sql = "SELECT * FROM imovel_comercial";
 
@@ -375,7 +385,8 @@ public class PropertyCommercialRepository {
 		}
 		return commercials;
 	}
-
+	
+	@Override
 	public PropertyCommercial getPropertyById(int id) throws SQLException {
 		String sql = "SELECT * FROM imovel_comercial WHERE id = ?";
 		PropertyCommercial commercial = null;

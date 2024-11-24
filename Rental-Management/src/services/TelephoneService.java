@@ -34,7 +34,7 @@ public class TelephoneService {
 		Telephone telephone = create(firstTelephone, secondTelephone, person);
 		if (telephone != null) {
 			telephone.setPerson(person);
-			telephone.getPerson().setCpf(person.getCpf());
+			telephone.getPerson().setId(person.getId());
 			telephoneDAO.save(telephone);
 		}
 	}

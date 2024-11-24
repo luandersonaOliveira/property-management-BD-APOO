@@ -6,7 +6,7 @@ import java.util.List;
 import entity.Telephone;
 
 public interface ITelephoneRepository {
-	
+
 	public void save(Telephone telephone);
 
 	public void updateAll(Telephone telephone);

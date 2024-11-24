@@ -12,7 +12,7 @@ public class PropertyConnections {
 	private static final String PASSWORD = "mysql0123";
 
 	// Caminho do banco de dados, porta, nome do banco de dados
-	private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/property_management_apoo";
+	private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/gerenciamento_alugueis";
 
 	/*
 	 * Conexão com banco de dados

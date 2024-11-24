@@ -16,7 +16,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void save(Landlord landlord) {
-		String sql = "INSERT INTO proprietario () VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO proprietario (nome, cpf, email) VALUES (?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -35,7 +35,6 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nProprietário adicionado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -57,7 +56,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateAll(Landlord landlord) {
-		String sql = "UPDATE proprietario SET nome = ?, telefone = ?, email = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET nome = ?, email = ?" + "WHERE idproprietario = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -76,7 +75,6 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nProprietário atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -96,7 +94,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateName(Landlord landlord) {
-		String sql = "UPDATE proprietario SET nome = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET nome = ?" + "WHERE idproprietario = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -114,7 +112,6 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nProprietário atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -134,7 +131,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void updateEmail(Landlord landlord) {
-		String sql = "UPDATE proprietario SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE proprietario SET email = ?" + "WHERE idproprietario = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -152,7 +149,6 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nProprietário atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -172,7 +168,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM proprietario WHERE id = ?";
+		String sql = "DELETE FROM proprietario WHERE idproprietario = ?";
 
 		Connection conn = null;
 
@@ -185,7 +181,6 @@ public class LandlordRepository implements ILandlordRepository {
 			pstm.setInt(1, id);
 
 			pstm.execute();
-			System.out.println("Proprietário removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -223,7 +218,7 @@ public class LandlordRepository implements ILandlordRepository {
 				Landlord landlord = new Landlord();
 
 				// Recuperar o id
-				landlord.setId(rset.getInt("id"));
+				landlord.setId(rset.getInt("idproprietario"));
 
 				// Recuperar o nome
 				landlord.setName(rset.getString("nome"));
@@ -261,7 +256,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public Landlord getLandlordById(int id) throws SQLException {
-		String sql = "SELECT * FROM proprietario WHERE id = ?";
+		String sql = "SELECT * FROM proprietario WHERE idproprietario = ?";
 		Landlord landlord = null;
 
 		Connection conn = null;
@@ -276,7 +271,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 			if (rset.next()) {
 				landlord = new Landlord();
-				landlord.setId(rset.getInt("id"));
+				landlord.setId(rset.getInt("idproprietario"));
 				landlord.setName(rset.getString("nome"));
 				landlord.setCpf(rset.getString("cpf"));
 				landlord.setEmail(rset.getString("email"));

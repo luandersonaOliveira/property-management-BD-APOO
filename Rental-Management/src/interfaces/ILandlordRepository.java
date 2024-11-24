@@ -18,6 +18,6 @@ public interface ILandlordRepository {
 	public void deleteByID(int id);
 
 	public List<Landlord> getLandlords() throws SQLException;
-	
+
 	public Landlord getLandlordById(int id) throws SQLException;
 }

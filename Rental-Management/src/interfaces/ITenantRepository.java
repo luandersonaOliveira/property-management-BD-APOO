@@ -20,6 +20,6 @@ public interface ITenantRepository {
 	public void deleteByID(int id);
 
 	public List<Tenant> getTenants() throws SQLException;
-	
+
 	public Tenant getTenantById(int id) throws SQLException;
 }

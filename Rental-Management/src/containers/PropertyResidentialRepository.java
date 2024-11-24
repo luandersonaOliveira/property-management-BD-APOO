@@ -9,14 +9,14 @@ import java.util.List;
 
 import connection.PropertyConnections;
 import entity.Landlord;
-import entity.PropertyCommercial;
 import entity.PropertyResidential;
 import enums.PropertyOccupation;
 import enums.PropertyType;
-import enums.TheTypeOfBusiness;
+import interfaces.IPropertyResidential;
 
-public class PropertyResidentialRepository {
+public class PropertyResidentialRepository implements IPropertyResidential {
 
+	@Override
 	public void save(PropertyResidential residential) {
 		String sql = "INSERT INTO imovel_residencial (cpfProprietario, endereco, valorDoAluguel, tipo, status, numeroDeQuartos, areaLazer) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -55,8 +55,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateAll(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?, tipoNegocio = ?"
+		String sql = "UPDATE imovel_residencial SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?, areaLazer = ?"
 				+ "WHERE id = ?";
 
 		Connection conn = null;
@@ -97,8 +98,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateAddress(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET endereco = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel_residencial SET endereco = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -133,8 +135,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateRentalValue(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET valorDoAluguel = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel_residencial SET valorDoAluguel = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -169,8 +172,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateType(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET tipo = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel_residencial SET tipo = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -205,8 +209,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateOccupation(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET status = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel_residencial SET status = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -241,8 +246,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void updateArea(PropertyResidential residential) {
-		String sql = "UPDATE imovel_comercial SET areaLazer = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel_residencial SET areaLazer = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -277,8 +283,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM imovel_comercial WHERE id = ?";
+		String sql = "DELETE FROM imovel_residencial WHERE id = ?";
 
 		Connection conn = null;
 
@@ -308,8 +315,9 @@ public class PropertyResidentialRepository {
 		}
 	}
 
+	@Override
 	public List<PropertyResidential> getProperty() throws SQLException {
-		String sql = "SELECT * FROM imovel_comercial";
+		String sql = "SELECT * FROM imovel_residencial";
 
 		List<PropertyResidential> residentials = new ArrayList<PropertyResidential>();
 
@@ -344,6 +352,8 @@ public class PropertyResidentialRepository {
 						.valueOf(rset.getString("occupation").toUpperCase());
 				residential.setOccupation(propertyOccupation);
 
+				residential.setTheLeisureArea(rset.getBoolean("areaLazer"));
+
 				// Recuperar o cpf_Landlord e associar ao Landlord
 				Landlord landlord = new Landlord();
 				landlord.setCpf(rset.getString("cpfProprietario"));
@@ -374,9 +384,10 @@ public class PropertyResidentialRepository {
 		return residentials;
 	}
 
+	@Override
 	public PropertyResidential getPropertyById(int id) throws SQLException {
-		String sql = "SELECT * FROM imovel_comercial WHERE id = ?";
-		PropertyCommercial commercial = null;
+		String sql = "SELECT * FROM imovel_residencial WHERE id = ?";
+		PropertyResidential residential = null;
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -389,24 +400,23 @@ public class PropertyResidentialRepository {
 			rset = pstm.executeQuery();
 
 			if (rset.next()) {
-				commercial = new PropertyCommercial();
-				commercial.setId(rset.getInt("id"));
-				commercial.setAddress(rset.getString("address"));
-				commercial.setRentalValue(rset.getDouble("rental_value"));
+				residential = new PropertyResidential();
+				residential.setId(rset.getInt("id"));
+				residential.setAddress(rset.getString("address"));
+				residential.setRentalValue(rset.getDouble("rental_value"));
 
 				PropertyType propertyType = PropertyType.valueOf(rset.getString("tipo").toUpperCase());
-				commercial.setType(propertyType);
+				residential.setType(propertyType);
 
 				PropertyOccupation propertyOccupation = PropertyOccupation
 						.valueOf(rset.getString("occupation").toUpperCase());
-				commercial.setOccupation(propertyOccupation);
+				residential.setOccupation(propertyOccupation);
 
-				TheTypeOfBusiness business = TheTypeOfBusiness.valueOf(rset.getString("tiposNegocio").toUpperCase());
-				commercial.setBusiness(business);
+				residential.setTheLeisureArea(rset.getBoolean("areaLazer"));
 
 				Landlord landlord = new Landlord();
 				landlord.setCpf(rset.getString("cpfProprietario"));
-				commercial.setLandlord(landlord);
+				residential.setLandlord(landlord);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -426,7 +436,7 @@ public class PropertyResidentialRepository {
 			}
 		}
 
-		return commercial;
+		return residential;
 	}
 
 }

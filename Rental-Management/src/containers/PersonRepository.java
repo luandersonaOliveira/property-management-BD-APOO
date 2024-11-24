@@ -17,13 +17,12 @@ public class PersonRepository implements IPersonRepository {
 
 	private static final LandlordRepository landlordDAO = new LandlordRepository();
 	private static final TenantRepository tenantDAO = new TenantRepository();
-	private static final TelephoneRepository telephoneDAO = new TelephoneRepository();
 
 	// CUSTOM METHODS
 
 	@Override
 	public void saveLandlord(Landlord landlord) {
-		String sql = "INSERT INTO pessoa () VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO pessoa (nome, cpf, email, cargo) VALUES (?, ?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -66,7 +65,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void saveTenant(Tenant tenant) {
-		String sql = "INSERT INTO pessoa () VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO pessoa (nome, cpf, email, saldo, cargo) VALUES (?, ?, ?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -82,12 +81,12 @@ public class PersonRepository implements IPersonRepository {
 			pstm.setString(1, tenant.getName());
 			pstm.setString(2, tenant.getCpf());
 			pstm.setString(3, tenant.getEmail());
-			pstm.setString(4, tenant.getPositions().toString());
+			pstm.setDouble(4, tenant.getWallet());
+			pstm.setString(5, tenant.getPositions().toString());
 
 			// Executar a query
 			pstm.execute();
 			tenantDAO.save(tenant);
-			telephoneDAO.save(null);
 			System.out.println("\nInquilino adicionado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,7 +109,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateAllLandlord(Landlord landlord) {
-		String sql = "UPDATE pessoa SET nome = ?, email = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?, email = ?" + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -150,7 +149,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateAllTenant(Tenant tenant) {
-		String sql = "UPDATE pessoa SET nome = ?, email = ?, saldo = ? " + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?, email = ?, saldo = ? " + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -191,7 +190,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateLandlordName(Landlord landlord) {
-		String sql = "UPDATE pessoa SET nome = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?" + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -230,7 +229,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateTenantName(Tenant tenant) {
-		String sql = "UPDATE pessoa SET nome = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?" + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -269,7 +268,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateLandlordEmail(Landlord landlord) {
-		String sql = "UPDATE pessoa SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET email = ?" + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -308,7 +307,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateTenantEmail(Tenant tenant) {
-		String sql = "UPDATE pessoa SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET email = ?" + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -347,7 +346,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateTenantWallet(Tenant tenant) {
-		String sql = "UPDATE pessoa SET saldo = ? " + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET saldo = ? " + "WHERE idpessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -386,7 +385,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void deleteLandlordByID(int id) {
-		String sql = "DELETE FROM pessoa WHERE id = ?";
+		String sql = "DELETE FROM pessoa WHERE idpessoa = ?";
 
 		Connection conn = null;
 
@@ -400,7 +399,6 @@ public class PersonRepository implements IPersonRepository {
 
 			pstm.execute();
 			landlordDAO.deleteByID(id);
-			telephoneDAO.deleteByID(id);
 			System.out.println("Proprietário removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -421,7 +419,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void deleteTenantByID(int id) {
-		String sql = "DELETE FROM pessoa WHERE id = ?";
+		String sql = "DELETE FROM pessoa WHERE idpessoa = ?";
 
 		Connection conn = null;
 
@@ -435,7 +433,6 @@ public class PersonRepository implements IPersonRepository {
 
 			pstm.execute();
 			tenantDAO.deleteByID(id);
-			telephoneDAO.deleteByID(id);
 			System.out.println("Inquilino removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -474,7 +471,7 @@ public class PersonRepository implements IPersonRepository {
 				Landlord landlord = new Landlord();
 
 				// Recuperar o id
-				landlord.setId(rset.getInt("id"));
+				landlord.setId(rset.getInt("idpessoa"));
 
 				// Recuperar o nome
 				landlord.setName(rset.getString("nome"));
@@ -486,8 +483,6 @@ public class PersonRepository implements IPersonRepository {
 				landlord.setEmail(rset.getString("email"));
 
 				landlords.add(landlord);
-				
-				telephoneDAO.getTelephone();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -532,7 +527,7 @@ public class PersonRepository implements IPersonRepository {
 				Tenant tenant = new Tenant();
 
 				// Recuperar o id
-				tenant.setId(rset.getInt("id"));
+				tenant.setId(rset.getInt("idpessoa"));
 
 				// Recuperar o nome
 				tenant.setName(rset.getString("nome"));
@@ -545,10 +540,8 @@ public class PersonRepository implements IPersonRepository {
 
 				// Recuperar o saldo
 				tenant.setWallet(rset.getDouble("saldo"));
-				
+
 				tenants.add(tenant);
-				
-				telephoneDAO.getTelephone();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -590,11 +583,10 @@ public class PersonRepository implements IPersonRepository {
 
 			if (rset.next()) {
 				landlord = new Landlord();
-				landlord.setId(rset.getInt("id"));
+				landlord.setId(rset.getInt("idpessoa"));
 				landlord.setName(rset.getString("nome"));
 				landlord.setCpf(rset.getString("cpf"));
 				landlord.setEmail(rset.getString("email"));
-				telephoneDAO.getTelephoneById(id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -634,12 +626,11 @@ public class PersonRepository implements IPersonRepository {
 
 			if (rset.next()) {
 				tenant = new Tenant();
-				tenant.setId(rset.getInt("id"));
+				tenant.setId(rset.getInt("idpessoa"));
 				tenant.setName(rset.getString("nome"));
 				tenant.setCpf(rset.getString("cpf"));
 				tenant.setEmail(rset.getString("email"));
 				tenant.setWallet(rset.getDouble("saldo"));
-				telephoneDAO.getTelephoneById(id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

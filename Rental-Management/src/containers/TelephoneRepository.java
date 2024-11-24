@@ -12,10 +12,10 @@ import entity.Telephone;
 import interfaces.ITelephoneRepository;
 
 public class TelephoneRepository implements ITelephoneRepository {
-	
+
 	@Override
 	public void save(Telephone telephone) {
-		String sql = "INSERT INTO telefone () VALUES (?, ?, ?)";
+		String sql = "INSERT INTO telefone_pessoa (idpessoa, primeiro_telefone, segundo_telefone) VALUES (?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -28,9 +28,9 @@ public class TelephoneRepository implements ITelephoneRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores que são esperados pela query
-			pstm.setString(1, telephone.getFirstTelephone());
-			pstm.setString(2, telephone.getSecondTelephone());
-			pstm.setInt(3, telephone.getPerson().getId());
+			pstm.setInt(1, telephone.getPerson().getId());
+			pstm.setString(2, telephone.getFirstTelephone());
+			pstm.setString(3, telephone.getSecondTelephone());
 
 			// Executar a query
 			pstm.execute();
@@ -55,7 +55,8 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public void updateAll(Telephone telephone) {
-		String sql = "UPDATE telefone SET primeiro_telefone = ?, segundo_telefone" + "WHERE id = ?";
+		String sql = "UPDATE telefone_pessoa SET primeiro_telefone = ?, segundo_telefone = ?"
+				+ "WHERE idtelefone_pessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -70,7 +71,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 			// Adicionar os valores para atualizar
 			pstm.setString(1, telephone.getFirstTelephone());
 			pstm.setString(2, telephone.getSecondTelephone());
-			pstm.setInt(3, telephone.getId());
+			pstm.setInt(3, telephone.getPerson().getId());
 
 			// Executar a query
 			pstm.execute();
@@ -93,7 +94,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public void updateFirstTelephone(Telephone telephone) {
-		String sql = "UPDATE telefone SET primeiro_telefone = ? " + "WHERE id = ?";
+		String sql = "UPDATE telefone_pessoa SET primeiro_telefone = ? " + "WHERE idtelefone_pessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -130,7 +131,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public void updateSecondTelephone(Telephone telephone) {
-		String sql = "UPDATE telefone SET segundo_telefone = ? " + "WHERE id = ?";
+		String sql = "UPDATE telefone_pessoa SET segundo_telefone = ? " + "WHERE idtelefone_pessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -167,7 +168,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM telefone WHERE id = ?";
+		String sql = "DELETE FROM telefone_pessoa WHERE idtelefone_pessoa = ?";
 
 		Connection conn = null;
 
@@ -199,7 +200,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public List<Telephone> getTelephone() throws SQLException {
-		String sql = "SELECT * FROM telefone";
+		String sql = "SELECT * FROM telefone_pessoa";
 
 		List<Telephone> telephones = new ArrayList<Telephone>();
 
@@ -249,7 +250,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public Telephone getTelephoneById(int id) throws SQLException {
-		String sql = "SELECT * FROM telefone WHERE id = ?";
+		String sql = "SELECT * FROM telefone_pessoa WHERE idpessoa = ?";
 		Telephone telephone = null;
 
 		Connection conn = null;
@@ -264,7 +265,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 			if (rset.next()) {
 				telephone = new Telephone();
-				telephone.setId(rset.getInt("id"));
+				telephone.setId(rset.getInt("idpessoa"));
 				telephone.setFirstTelephone(rset.getString("primeiro_telefone"));
 				telephone.setSecondTelephone(rset.getString("segundo_telefone"));
 			}

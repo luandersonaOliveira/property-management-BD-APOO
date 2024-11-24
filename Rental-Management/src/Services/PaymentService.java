@@ -15,7 +15,6 @@ public class PaymentService {
 	
 	private static final Scanner scanner = new Scanner(System.in);
 	
-	
 	// ADD
 	public void add(String paymentDate, double amountToPay, PaymentMethod method, PaymentStatus status, Lease lease) throws LeaseException {
 		if (lease == null) {

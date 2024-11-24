@@ -16,7 +16,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void save(Tenant tenant) {
-		String sql = "INSERT INTO inquilino () VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO inquilino (nome, cpf, email, saldo) VALUES (?, ?, ?, ?)";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -35,7 +35,6 @@ public class TenantRepository implements ITenantRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino adicionado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -57,7 +56,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateAll(Tenant tenant) {
-		String sql = "UPDATE inquilino SET nome = ?, telefone = ?, email = ?, saldo = ? " + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET nome = ?, email = ?, saldo = ? " + "WHERE idinquilino = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -77,7 +76,6 @@ public class TenantRepository implements ITenantRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -97,7 +95,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateName(Tenant tenant) {
-		String sql = "UPDATE inquilino SET nome = ?" + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET nome = ?" + "WHERE idinquilino = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -115,7 +113,6 @@ public class TenantRepository implements ITenantRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -135,7 +132,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateEmail(Tenant tenant) {
-		String sql = "UPDATE inquilino SET email = ?" + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET email = ?" + "WHERE idinquilino = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -153,7 +150,6 @@ public class TenantRepository implements ITenantRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -173,7 +169,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void updateWallet(Tenant tenant) {
-		String sql = "UPDATE inquilino SET saldo = ? " + "WHERE id = ?";
+		String sql = "UPDATE inquilino SET saldo = ? " + "WHERE idinquilino = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -191,7 +187,6 @@ public class TenantRepository implements ITenantRepository {
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -211,7 +206,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM inquilino WHERE id = ?";
+		String sql = "DELETE FROM inquilino WHERE idinquilino = ?";
 
 		Connection conn = null;
 
@@ -224,7 +219,6 @@ public class TenantRepository implements ITenantRepository {
 			pstm.setInt(1, id);
 
 			pstm.execute();
-			System.out.println("Inquilino removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -262,7 +256,7 @@ public class TenantRepository implements ITenantRepository {
 				Tenant tenant = new Tenant();
 
 				// Recuperar o id
-				tenant.setId(rset.getInt("id"));
+				tenant.setId(rset.getInt("idinquilino"));
 
 				// Recuperar o nome
 				tenant.setName(rset.getString("nome"));
@@ -303,7 +297,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public Tenant getTenantById(int id) throws SQLException {
-		String sql = "SELECT * FROM inquilino WHERE id = ?";
+		String sql = "SELECT * FROM inquilino WHERE idinquilino = ?";
 		Tenant tenant = null;
 
 		Connection conn = null;
@@ -318,7 +312,7 @@ public class TenantRepository implements ITenantRepository {
 
 			if (rset.next()) {
 				tenant = new Tenant();
-				tenant.setId(rset.getInt("id"));
+				tenant.setId(rset.getInt("idinquilino"));
 				tenant.setName(rset.getString("nome"));
 				tenant.setCpf(rset.getString("cpf"));
 				tenant.setEmail(rset.getString("email"));
