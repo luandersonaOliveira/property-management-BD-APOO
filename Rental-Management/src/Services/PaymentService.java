@@ -31,7 +31,7 @@ public class PaymentService {
 	}
 	
 	public Payment create(String paymentDate, double amountToPay, PaymentMethod method, PaymentStatus status, Lease lease) {
-		return null;
+		return new Payment(paymentDate, amountToPay, method, status, lease);
 		
 	}
 	

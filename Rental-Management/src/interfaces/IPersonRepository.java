@@ -20,10 +20,6 @@ public interface IPersonRepository {
 	
 	public void updateTenantName(Tenant tenant);
 	
-	public void updateLandlordTelephone(Landlord landlord);
-	
-	public void updateTenantTelephone(Tenant tenant);
-	
 	public void updateLandlordEmail(Landlord landlord);
 	
 	public void updateTenantEmail(Tenant tenant);

@@ -8,6 +8,7 @@ import entity.Landlord;
 import entity.Lease;
 import entity.Person;
 import entity.Property;
+import entity.Telephone;
 import entity.Tenant;
 import enums.PersonsPosition;
 import enums.PropertyOccupation;
@@ -21,6 +22,7 @@ import exceptions.TenantException;
 import services.LeaseService;
 import services.PersonService;
 import services.PropertyService;
+import services.TelephoneService;
 
 public class Main {
 	// ATTRIBUTES
@@ -30,6 +32,7 @@ public class Main {
 	private static PersonService personService = new PersonService();
 	private static PropertyService propertyService = new PropertyService();
 	private static LeaseService leaseService = new LeaseService();
+	private static TelephoneService telephoneService = new TelephoneService();
 
 	// CUSTOM METHODS
 
@@ -84,7 +87,7 @@ public class Main {
 	}
 
 	// MENU TENANT
-	private static void menuTenant() throws TenantException, SQLException, LandlordException {
+	private static void menuTenant() throws Exception {
 		boolean exit = false;
 		do {
 			System.out.println("\n------------------------------");
@@ -116,7 +119,7 @@ public class Main {
 	}
 
 	// MENU LANDLORD
-	private static void menuLandlord() throws LandlordException, SQLException, TenantException {
+	private static void menuLandlord() throws Exception {
 		boolean exit = false;
 		do {
 			System.out.println("\n------------------------------------------");
@@ -220,44 +223,57 @@ public class Main {
 	}
 
 	// CREATE TENANTS
-	private static void createTenants() throws TenantException, LandlordException {
+	private static void createTenants() throws TenantException, LandlordException, PropertyException {
 		try {
 			System.out.print("\nNome: ");
 			String name = scanner.nextLine();
 			System.out.print("CPF: ");
 			String cpf = scanner.nextLine();
-			System.out.print("Telefone: ");
-			String telephone = scanner.nextLine();
+			System.out.print("Primeiro Telefone: ");
+			String telephone1 = scanner.nextLine();
+			System.out.print("Segundo Telefone: ");
+			String telephone2 = scanner.nextLine();
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 			System.out.print("Saldo: ");
 			double wallet = scanner.nextDouble();
 
-			Person person = new Person(name, cpf, telephone, email, wallet, PersonsPosition.TENANT);
+			Person person = new Person(name, cpf, email, wallet, PersonsPosition.TENANT);
+			Telephone telephone = new Telephone(telephone1, telephone2, person);
 
-			personService.add(person.getName(), person.getCpf(), person.getTelephone(), person.getEmail(),
-					person.getWallet(), person.getPositions());
+			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
+					person.getPositions());
+
+			telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());
+
 		} catch (TenantException e) {
 			System.out.println("\n" + e.getMessage());
 		}
 	}
 
 	// CREATE LANDLORD
-	private static void createLandlord() throws TenantException {
+	private static void createLandlord() throws TenantException, PropertyException {
 		try {
 			System.out.print("\nNome: ");
 			String name = scanner.nextLine();
 			System.out.print("CPF: ");
 			String cpf = scanner.nextLine();
 			System.out.print("Telefone: ");
-			String telephone = scanner.nextLine();
+			System.out.print("Primeiro Telefone: ");
+			String telephone1 = scanner.nextLine();
+			System.out.print("Segundo Telefone: ");
+			String telephone2 = scanner.nextLine();
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 
-			Person person = new Person(name, cpf, telephone, email, 0, PersonsPosition.LANDLORD);
+			Person person = new Person(name, cpf, email, 0, PersonsPosition.LANDLORD);
+			Telephone telephone = new Telephone(telephone1, telephone2, person);
 
-			personService.add(person.getName(), person.getCpf(), person.getTelephone(), person.getEmail(),
-					person.getWallet(), person.getPositions());
+			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
+					person.getPositions());
+
+			telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());
+
 		} catch (LandlordException e) {
 			System.out.println("\n" + e.getMessage());
 		}
@@ -389,8 +405,7 @@ public class Main {
 
 				Lease lease = new Lease(startDate, endDate, property, property.getLandlord(), tenant);
 
-				leaseService.add	(property.getLandlord(), property, tenant, lease.getStartDate(),
-						lease.getEndDate());
+				leaseService.add(property.getLandlord(), property, tenant, lease.getStartDate(), lease.getEndDate());
 			} else {
 				System.out.println("\nErro: Proprietário não foi cadastrado!");
 			}
@@ -499,34 +514,43 @@ public class Main {
 	private static void listProperties() throws SQLException, Exception {
 
 		// LANDLORD ADD
-		Person ps1 = new Person("Liang", "74678506039", "86986012358", "Liang@gmail.com.br", 0,
-				PersonsPosition.LANDLORD);
+		Person ps1 = new Person("Liang", "74678506039", "Liang@gmail.com.br", 0, PersonsPosition.LANDLORD);
 
-		Person ps2 = new Person("Ravi", "89867001826", "62989335737", "Ravi@gmail.com.br", 0, PersonsPosition.LANDLORD);
+		Telephone tp1 = new Telephone("86986012358", "85321068968", ps1);
 
-		Person ps3 = new Person("Elli", "21422187926", "63998845787", "Elli@gmail.com.br", 0, PersonsPosition.LANDLORD);
+		Person ps2 = new Person("Ravi", "89867001826", "Ravi@gmail.com.br", 0, PersonsPosition.LANDLORD);
 
-		Person ps4 = new Person("Norabel", "38766718686", "92999042606", "Norabel@gmail.com.br", 0,
-				PersonsPosition.LANDLORD);
+		Telephone tp2 = new Telephone("62989335737", "73753398926", ps2);
 
-		Person ps5 = new Person("YuYan", "94614156487", "62991046653", "YuYan@gmail.com.br", 0,
-				PersonsPosition.LANDLORD);
+		Person ps3 = new Person("Elli", "21422187926", "Elli@gmail.com.br", 0, PersonsPosition.LANDLORD);
+
+		Telephone tp3 = new Telephone("63998845787", "78754889936", ps3);
+
+		Person ps4 = new Person("Norabel", "38766718686", "Norabel@gmail.com.br", 0, PersonsPosition.LANDLORD);
+
+		Telephone tp4 = new Telephone("92999042606", "60624099929", ps4);
+
+		Person ps5 = new Person("YuYan", "94614156487", "YuYan@gmail.com.br", 0, PersonsPosition.LANDLORD);
+
+		Telephone tp5 = new Telephone("62991046653", "35664019926", ps5);
 
 		// LANDLORD SERVICE ADD
-		personService.add(ps1.getName(), ps1.getCpf(), ps1.getTelephone(), ps1.getEmail(), ps1.getWallet(),
-				PersonsPosition.LANDLORD);
+		personService.add(ps1.getName(), ps1.getCpf(), ps1.getEmail(), ps1.getWallet(), PersonsPosition.LANDLORD);
 
-		personService.add(ps2.getName(), ps2.getCpf(), ps2.getTelephone(), ps2.getEmail(), ps2.getWallet(),
-				PersonsPosition.LANDLORD);
+		personService.add(ps2.getName(), ps2.getCpf(), ps2.getEmail(), ps2.getWallet(), PersonsPosition.LANDLORD);
 
-		personService.add(ps3.getName(), ps3.getCpf(), ps3.getTelephone(), ps3.getEmail(), ps3.getWallet(),
-				PersonsPosition.LANDLORD);
+		personService.add(ps3.getName(), ps3.getCpf(), ps3.getEmail(), ps3.getWallet(), PersonsPosition.LANDLORD);
 
-		personService.add(ps4.getName(), ps4.getCpf(), ps4.getTelephone(), ps4.getEmail(), ps4.getWallet(),
-				PersonsPosition.LANDLORD);
+		personService.add(ps4.getName(), ps4.getCpf(), ps4.getEmail(), ps4.getWallet(), PersonsPosition.LANDLORD);
 
-		personService.add(ps5.getName(), ps5.getCpf(), ps5.getTelephone(), ps5.getEmail(), ps5.getWallet(),
-				PersonsPosition.LANDLORD);
+		personService.add(ps5.getName(), ps5.getCpf(), ps5.getEmail(), ps5.getWallet(), PersonsPosition.LANDLORD);
+
+		// TELEPHONE SERVICE ADD
+		telephoneService.add(tp1.getFirstTelephone(), tp1.getSecondTelephone(), tp1.getPerson());
+		telephoneService.add(tp2.getFirstTelephone(), tp2.getSecondTelephone(), tp2.getPerson());
+		telephoneService.add(tp3.getFirstTelephone(), tp3.getSecondTelephone(), tp3.getPerson());
+		telephoneService.add(tp4.getFirstTelephone(), tp4.getSecondTelephone(), tp4.getPerson());
+		telephoneService.add(tp5.getFirstTelephone(), tp5.getSecondTelephone(), tp5.getPerson());
 
 		// LANDLORD SERVICE SEARCH
 		Landlord l1 = personService.searchLandlord(1);

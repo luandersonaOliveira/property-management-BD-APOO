@@ -13,8 +13,6 @@ public interface ITenantRepository {
 
 	public void updateName(Tenant tenant);
 
-	public void updateTelephone(Tenant tenant);
-
 	public void updateEmail(Tenant tenant);
 
 	public void updateWallet(Tenant tenant);

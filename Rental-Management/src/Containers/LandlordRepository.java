@@ -16,7 +16,7 @@ public class LandlordRepository implements ILandlordRepository {
 
 	@Override
 	public void save(Landlord landlord) {
-		String sql = "INSERT INTO proprietario (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO proprietario () VALUES (?, ?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -31,8 +31,7 @@ public class LandlordRepository implements ILandlordRepository {
 			// Adicionar os valores que são esperados pela query
 			pstm.setString(1, landlord.getName());
 			pstm.setString(2, landlord.getCpf());
-			pstm.setString(3, landlord.getTelephone());
-			pstm.setString(4, landlord.getEmail());
+			pstm.setString(3, landlord.getEmail());
 
 			// Executar a query
 			pstm.execute();
@@ -72,9 +71,8 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Adicionar os valores para atualizar
 			pstm.setString(1, landlord.getName());
-			pstm.setString(2, landlord.getTelephone());
-			pstm.setString(3, landlord.getEmail());
-			pstm.setInt(4, landlord.getId());
+			pstm.setString(2, landlord.getEmail());
+			pstm.setInt(3, landlord.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -112,44 +110,6 @@ public class LandlordRepository implements ILandlordRepository {
 
 			// Adicionar os valores para atualizar
 			pstm.setString(1, landlord.getName());
-			pstm.setInt(2, landlord.getId());
-
-			// Executar a query
-			pstm.execute();
-			System.out.println("\nProprietário atualizado com sucesso!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateTelephone(Landlord landlord) {
-		String sql = "UPDATE proprietario SET telefone = ?" + "WHERE id = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setString(1, landlord.getTelephone());
 			pstm.setInt(2, landlord.getId());
 
 			// Executar a query
@@ -271,9 +231,6 @@ public class LandlordRepository implements ILandlordRepository {
 				// Recuoerar o cpf
 				landlord.setCpf(rset.getString("cpf"));
 
-				// Recuoerar o telefone
-				landlord.setTelephone(rset.getString("telefone"));
-
 				// Recuoerar o email
 				landlord.setEmail(rset.getString("email"));
 
@@ -322,7 +279,6 @@ public class LandlordRepository implements ILandlordRepository {
 				landlord.setId(rset.getInt("id"));
 				landlord.setName(rset.getString("nome"));
 				landlord.setCpf(rset.getString("cpf"));
-				landlord.setTelephone(rset.getString("telefone"));
 				landlord.setEmail(rset.getString("email"));
 			}
 		} catch (Exception e) {

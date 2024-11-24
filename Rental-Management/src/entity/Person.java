@@ -6,7 +6,7 @@ public class Person {
 	// ATTRIBUTES
 
 	private int id;
-	private String name, cpf, telephone, email;
+	private String name, cpf, email;
 	private double wallet;
 	private PersonsPosition positions;
 
@@ -16,10 +16,9 @@ public class Person {
 
 	}
 
-	public Person(String name, String cpf, String telephone, String email, double wallet,PersonsPosition positions) {
+	public Person(String name, String cpf, String email, double wallet,PersonsPosition positions) {
 		this.name = name;
 		this.cpf = cpf;
-		this.telephone = telephone;
 		this.email = email;
 		this.wallet = (wallet);
 		this.positions = positions;
@@ -49,14 +48,6 @@ public class Person {
 
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
-	}
-
-	public String getTelephone() {
-		return telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
 	}
 
 	public String getEmail() {

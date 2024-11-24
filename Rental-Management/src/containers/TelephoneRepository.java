@@ -1,5 +1,4 @@
 package containers;
-// Repositório do Inquilino
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,15 +7,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import interfaces.ITenantRepository;
 import connection.PropertyConnections;
-import entity.Tenant;
+import entity.Telephone;
+import interfaces.ITelephoneRepository;
 
-public class TenantRepository implements ITenantRepository {
-
+public class TelephoneRepository implements ITelephoneRepository {
+	
 	@Override
-	public void save(Tenant tenant) {
-		String sql = "INSERT INTO inquilino () VALUES (?, ?, ?, ?, ?)";
+	public void save(Telephone telephone) {
+		String sql = "INSERT INTO telefone () VALUES (?, ?, ?)";
+		// person and landlord
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -28,14 +28,12 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores que são esperados pela query
-			pstm.setString(1, tenant.getName());
-			pstm.setString(2, tenant.getCpf());
-			pstm.setString(3, tenant.getEmail());
-			pstm.setDouble(4, tenant.getWallet());
+			pstm.setString(1, telephone.getFirstTelephone());
+			pstm.setString(2, telephone.getSecondTelephone());
+			pstm.setInt(3, telephone.getPerson().getId());
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino adicionado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -56,8 +54,8 @@ public class TenantRepository implements ITenantRepository {
 	}
 
 	@Override
-	public void updateAll(Tenant tenant) {
-		String sql = "UPDATE inquilino SET nome = ?, telefone = ?, email = ?, saldo = ? " + "WHERE id = ?";
+	public void updateAll(Telephone telephone) {
+		String sql = "UPDATE telefone SET primeiro_telefone = ?, segundo_telefone" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -70,14 +68,12 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, tenant.getName());
-			pstm.setString(2, tenant.getEmail());
-			pstm.setDouble(3, tenant.getWallet());
-			pstm.setInt(4, tenant.getId());
+			pstm.setString(1, telephone.getFirstTelephone());
+			pstm.setString(2, telephone.getSecondTelephone());
+			pstm.setInt(3, telephone.getId());
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -96,8 +92,8 @@ public class TenantRepository implements ITenantRepository {
 	}
 
 	@Override
-	public void updateName(Tenant tenant) {
-		String sql = "UPDATE inquilino SET nome = ?" + "WHERE id = ?";
+	public void updateFirstTelephone(Telephone telephone) {
+		String sql = "UPDATE telefone SET primeiro_telefone = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -110,12 +106,11 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, tenant.getName());
-			pstm.setInt(2, tenant.getId());
+			pstm.setString(1, telephone.getFirstTelephone());
+			pstm.setInt(2, telephone.getId());
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -134,8 +129,8 @@ public class TenantRepository implements ITenantRepository {
 	}
 
 	@Override
-	public void updateEmail(Tenant tenant) {
-		String sql = "UPDATE inquilino SET email = ?" + "WHERE id = ?";
+	public void updateSecondTelephone(Telephone telephone) {
+		String sql = "UPDATE telefone SET segundo_telefone = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -148,50 +143,11 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, tenant.getEmail());
-			pstm.setInt(2, tenant.getId());
+			pstm.setString(1, telephone.getSecondTelephone());
+			pstm.setInt(2, telephone.getId());
 
 			// Executar a query
 			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateWallet(Tenant tenant) {
-		String sql = "UPDATE inquilino SET saldo = ? " + "WHERE id = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setDouble(1, tenant.getWallet());
-			pstm.setInt(2, tenant.getId());
-
-			// Executar a query
-			pstm.execute();
-			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -211,7 +167,7 @@ public class TenantRepository implements ITenantRepository {
 
 	@Override
 	public void deleteByID(int id) {
-		String sql = "DELETE FROM inquilino WHERE id = ?";
+		String sql = "DELETE FROM telefone WHERE id = ?";
 
 		Connection conn = null;
 
@@ -224,7 +180,6 @@ public class TenantRepository implements ITenantRepository {
 			pstm.setInt(1, id);
 
 			pstm.execute();
-			System.out.println("Inquilino removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -243,10 +198,10 @@ public class TenantRepository implements ITenantRepository {
 	}
 
 	@Override
-	public List<Tenant> getTenants() throws SQLException {
-		String sql = "SELECT * FROM inquilino";
+	public List<Telephone> getTelephone() throws SQLException {
+		String sql = "SELECT * FROM telefone";
 
-		List<Tenant> tenants = new ArrayList<Tenant>();
+		List<Telephone> telephones = new ArrayList<Telephone>();
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -259,24 +214,15 @@ public class TenantRepository implements ITenantRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 			rset = pstm.executeQuery();
 			while (rset.next()) {
-				Tenant tenant = new Tenant();
+				Telephone telephone = new Telephone();
 
-				// Recuperar o id
-				tenant.setId(rset.getInt("id"));
+				// Recuperar o primeiro telefone
+				telephone.setFirstTelephone("primeiro_telefone");
 
-				// Recuperar o nome
-				tenant.setName(rset.getString("nome"));
+				// Recuperar o segundo telefone
+				telephone.setFirstTelephone("segundo_telefone");
 
-				// Recuoerar o cpf
-				tenant.setCpf(rset.getString("cpf"));
-
-				// Recuoerar o email
-				tenant.setEmail(rset.getString("email"));
-
-				// Recuperar o saldo
-				tenant.setWallet(rset.getDouble("saldo"));
-
-				tenants.add(tenant);
+				telephones.add(telephone);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -298,13 +244,13 @@ public class TenantRepository implements ITenantRepository {
 			}
 
 		}
-		return tenants;
+		return telephones;
 	}
 
 	@Override
-	public Tenant getTenantById(int id) throws SQLException {
-		String sql = "SELECT * FROM inquilino WHERE id = ?";
-		Tenant tenant = null;
+	public Telephone getTelephoneById(int id) throws SQLException {
+		String sql = "SELECT * FROM telefone WHERE id = ?";
+		Telephone telephone = null;
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -317,12 +263,10 @@ public class TenantRepository implements ITenantRepository {
 			rset = pstm.executeQuery();
 
 			if (rset.next()) {
-				tenant = new Tenant();
-				tenant.setId(rset.getInt("id"));
-				tenant.setName(rset.getString("nome"));
-				tenant.setCpf(rset.getString("cpf"));
-				tenant.setEmail(rset.getString("email"));
-				tenant.setWallet(rset.getDouble("saldo"));
+				telephone = new Telephone();
+				telephone.setId(rset.getInt("id"));
+				telephone.setFirstTelephone(rset.getString("primeiro_telefone"));
+				telephone.setSecondTelephone(rset.getString("segundo_telefone"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -342,7 +286,6 @@ public class TenantRepository implements ITenantRepository {
 			}
 		}
 
-		return tenant;
+		return telephone;
 	}
-
 }

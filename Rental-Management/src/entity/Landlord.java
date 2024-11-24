@@ -16,8 +16,8 @@ public class Landlord extends Person {
 
 	}
 
-	public Landlord(String name, String cpf, String telephone, String email, double wallet, PersonsPosition positions) {
-		super(name, cpf, telephone, email, wallet, positions);
+	public Landlord(String name, String cpf, String email, double wallet, PersonsPosition positions) {
+		super(name, cpf, email, wallet, positions);
 		this.id = super.getId();
 	}
 

@@ -17,12 +17,13 @@ public class PersonRepository implements IPersonRepository {
 
 	private static final LandlordRepository landlordDAO = new LandlordRepository();
 	private static final TenantRepository tenantDAO = new TenantRepository();
+	private static final TelephoneRepository telephoneDAO = new TelephoneRepository();
 
 	// CUSTOM METHODS
 
 	@Override
 	public void saveLandlord(Landlord landlord) {
-		String sql = "INSERT INTO pessoa (nome, cpf, telefone, email, cargo) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO pessoa () VALUES (?, ?, ?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -37,9 +38,8 @@ public class PersonRepository implements IPersonRepository {
 			// Adicionar os valores que são esperados pela query
 			pstm.setString(1, landlord.getName());
 			pstm.setString(2, landlord.getCpf());
-			pstm.setString(3, landlord.getTelephone());
-			pstm.setString(4, landlord.getEmail());
-			pstm.setString(5, landlord.getPositions().toString());
+			pstm.setString(3, landlord.getEmail());
+			pstm.setString(4, landlord.getPositions().toString());
 
 			// Executar a query
 			pstm.execute();
@@ -66,7 +66,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void saveTenant(Tenant tenant) {
-		String sql = "INSERT INTO pessoa (nome, cpf, telefone, email, cargo) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO pessoa () VALUES (?, ?, ?, ?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -81,13 +81,13 @@ public class PersonRepository implements IPersonRepository {
 			// Adicionar os valores que são esperados pela query
 			pstm.setString(1, tenant.getName());
 			pstm.setString(2, tenant.getCpf());
-			pstm.setString(3, tenant.getTelephone());
-			pstm.setString(4, tenant.getEmail());
-			pstm.setString(5, tenant.getPositions().toString());
+			pstm.setString(3, tenant.getEmail());
+			pstm.setString(4, tenant.getPositions().toString());
 
 			// Executar a query
 			pstm.execute();
 			tenantDAO.save(tenant);
+			telephoneDAO.save(null);
 			System.out.println("\nInquilino adicionado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -110,7 +110,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateAllLandlord(Landlord landlord) {
-		String sql = "UPDATE pessoa SET nome = ?, telefone = ?, email = ?" + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?, email = ?" + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -124,9 +124,8 @@ public class PersonRepository implements IPersonRepository {
 
 			// Adicionar os valores para atualizar
 			pstm.setString(1, landlord.getName());
-			pstm.setString(2, landlord.getTelephone());
-			pstm.setString(3, landlord.getEmail());
-			pstm.setInt(4, landlord.getId());
+			pstm.setString(2, landlord.getEmail());
+			pstm.setInt(3, landlord.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -151,7 +150,7 @@ public class PersonRepository implements IPersonRepository {
 
 	@Override
 	public void updateAllTenant(Tenant tenant) {
-		String sql = "UPDATE pessoa SET nome = ?, telefone = ?, email = ?, saldo = ? " + "WHERE id = ?";
+		String sql = "UPDATE pessoa SET nome = ?, email = ?, saldo = ? " + "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -165,10 +164,9 @@ public class PersonRepository implements IPersonRepository {
 
 			// Adicionar os valores para atualizar
 			pstm.setString(1, tenant.getName());
-			pstm.setString(2, tenant.getTelephone());
-			pstm.setString(3, tenant.getEmail());
-			pstm.setDouble(4, tenant.getWallet());
-			pstm.setInt(5, tenant.getId());
+			pstm.setString(2, tenant.getEmail());
+			pstm.setDouble(3, tenant.getWallet());
+			pstm.setInt(4, tenant.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -251,84 +249,6 @@ public class PersonRepository implements IPersonRepository {
 			// Executar a query
 			pstm.execute();
 			tenantDAO.updateName(tenant);
-			System.out.println("\nInquilino atualizado com sucesso!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateLandlordTelephone(Landlord landlord) {
-		String sql = "UPDATE pessoa SET telefone = ?" + "WHERE id = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setString(1, landlord.getTelephone());
-			pstm.setInt(2, landlord.getId());
-
-			// Executar a query
-			pstm.execute();
-			landlordDAO.updateTelephone(landlord);
-			System.out.println("\nProprietário atualizado com sucesso!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateTenantTelephone(Tenant tenant) {
-		String sql = "UPDATE pessoa SET telefone = ?" + "WHERE id = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setString(1, tenant.getTelephone());
-			pstm.setInt(2, tenant.getId());
-
-			// Executar a query
-			pstm.execute();
-			tenantDAO.updateTelephone(tenant);
 			System.out.println("\nInquilino atualizado com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -480,7 +400,7 @@ public class PersonRepository implements IPersonRepository {
 
 			pstm.execute();
 			landlordDAO.deleteByID(id);
-			landlordDAO.deleteByID(id);
+			telephoneDAO.deleteByID(id);
 			System.out.println("Proprietário removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -515,6 +435,7 @@ public class PersonRepository implements IPersonRepository {
 
 			pstm.execute();
 			tenantDAO.deleteByID(id);
+			telephoneDAO.deleteByID(id);
 			System.out.println("Inquilino removido com sucesso!");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -561,13 +482,12 @@ public class PersonRepository implements IPersonRepository {
 				// Recuoerar o cpf
 				landlord.setCpf(rset.getString("cpf"));
 
-				// Recuoerar o telefone
-				landlord.setTelephone(rset.getString("telefone"));
-
 				// Recuoerar o email
 				landlord.setEmail(rset.getString("email"));
 
 				landlords.add(landlord);
+				
+				telephoneDAO.getTelephone();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -620,16 +540,15 @@ public class PersonRepository implements IPersonRepository {
 				// Recuoerar o cpf
 				tenant.setCpf(rset.getString("cpf"));
 
-				// Recuoerar o telefone
-				tenant.setTelephone(rset.getString("telefone"));
-
 				// Recuoerar o email
 				tenant.setEmail(rset.getString("email"));
 
 				// Recuperar o saldo
 				tenant.setWallet(rset.getDouble("saldo"));
-
+				
 				tenants.add(tenant);
+				
+				telephoneDAO.getTelephone();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -674,8 +593,8 @@ public class PersonRepository implements IPersonRepository {
 				landlord.setId(rset.getInt("id"));
 				landlord.setName(rset.getString("nome"));
 				landlord.setCpf(rset.getString("cpf"));
-				landlord.setTelephone(rset.getString("telefone"));
 				landlord.setEmail(rset.getString("email"));
+				telephoneDAO.getTelephoneById(id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -718,9 +637,9 @@ public class PersonRepository implements IPersonRepository {
 				tenant.setId(rset.getInt("id"));
 				tenant.setName(rset.getString("nome"));
 				tenant.setCpf(rset.getString("cpf"));
-				tenant.setTelephone(rset.getString("telefone"));
 				tenant.setEmail(rset.getString("email"));
 				tenant.setWallet(rset.getDouble("saldo"));
+				telephoneDAO.getTelephoneById(id);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

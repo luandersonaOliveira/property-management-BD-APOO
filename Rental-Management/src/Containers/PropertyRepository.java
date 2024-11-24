@@ -14,11 +14,18 @@ import interfaces.IPropertyRepository;
 import connection.PropertyConnections;
 import entity.Landlord;
 import entity.Property;
+import entity.PropertyCommercial;
+import entity.PropertyResidential;
 
 public class PropertyRepository implements IPropertyRepository {
+	// ATTRIBUTES
 
-	@Override
-	public void save(Property property) {
+	private static final PropertyCommercialRepository commercialDAO = new PropertyCommercialRepository();
+	private static final PropertyResidentialRepository residentialDAO = new PropertyResidentialRepository();
+
+	// CUSTOM METHODS
+
+	public void saveCommercial(PropertyCommercial commercial) {
 		String sql = "INSERT INTO imovel (cpfProprietario, endereco, valorDoAluguel, tipo, status, numeroDeQuartos) VALUES (?, ?, ?, ?, ?, ?)";
 
 		Connection conn = null;
@@ -28,14 +35,54 @@ public class PropertyRepository implements IPropertyRepository {
 
 			if (conn != null) {
 				pstm = conn.prepareStatement(sql);
-				pstm.setString(1, property.getLandlord().getCpf());
-				pstm.setString(2, property.getAddress());
-				pstm.setDouble(3, property.getRentalValue());
-				pstm.setString(4, property.getType().toString());
-				pstm.setString(5, property.getOccupation().toString());
-				pstm.setInt(6, property.getNumberOfRooms());
+				pstm.setString(1, commercial.getLandlord().getCpf());
+				pstm.setString(2, commercial.getAddress());
+				pstm.setDouble(3, commercial.getRentalValue());
+				pstm.setString(4, commercial.getType().toString());
+				pstm.setString(5, commercial.getOccupation().toString());
+				pstm.setInt(6, commercial.getNumberOfRooms());
 
 				pstm.execute();
+				commercialDAO.save(commercial);
+				System.out.println("\nImóvel adicionado com sucesso!");
+			} else {
+				System.out.println("Erro: Conexão com o banco de dados falhou.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void saveResidential(PropertyResidential residential) {
+		String sql = "INSERT INTO imovel (cpfProprietario, endereco, valorDoAluguel, tipo, status, numeroDeQuartos) VALUES (?, ?, ?, ?, ?, ?)";
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+		try {
+			conn = PropertyConnections.createConnectionToMySQL();
+
+			if (conn != null) {
+				pstm = conn.prepareStatement(sql);
+				pstm.setString(1, residential.getLandlord().getCpf());
+				pstm.setString(2, residential.getAddress());
+				pstm.setDouble(3, residential.getRentalValue());
+				pstm.setString(4, residential.getType().toString());
+				pstm.setString(5, residential.getOccupation().toString());
+				pstm.setInt(6, residential.getNumberOfRooms());
+
+				pstm.execute();
+				residentialDAO.save(residential);
 				System.out.println("\nImóvel adicionado com sucesso!");
 			} else {
 				System.out.println("Erro: Conexão com o banco de dados falhou.");
@@ -58,7 +105,8 @@ public class PropertyRepository implements IPropertyRepository {
 
 	@Override
 	public void updateAll(Property property) {
-		String sql = "UPDATE imovel SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?" + "WHERE id = ?";
+		String sql = "UPDATE imovel SET endereco = ?, valorDoAluguel = ?, tipo = ?, status = ?, numeroDeQuartos = ?"
+				+ "WHERE id = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -457,5 +505,4 @@ public class PropertyRepository implements IPropertyRepository {
 
 		return propertys;
 	}
-
 }

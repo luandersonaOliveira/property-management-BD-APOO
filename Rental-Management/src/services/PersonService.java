@@ -20,22 +20,21 @@ public class PersonService {
 
 	private static final Scanner scanner = new Scanner(System.in);
 	private static final PersonRepository personDAO = new PersonRepository();
+	private static TelephoneService telephoneService = new TelephoneService();
 
 	// ADD LANDLORD AND TENANT
 
-	public void add(String name, String cpf, String telephone, String email, double wallet, PersonsPosition positions)
+	public void add(String name, String cpf, String email, double wallet, PersonsPosition positions)
 			throws TenantException, LandlordException {
 		switch (positions) {
 		case LANDLORD:
 			if (cpf.length() != 11) {
 				throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalidCPF);
-			} else if (telephone.length() != 9 && telephone.length() != 11) {
-				throw new LandlordException("Erro: " + EnumLandlordException.LandlordInvalidTelephone);
 			}
 
-			Person personL = new Person(name, cpf, telephone, email, wallet, positions);
-			Landlord landlord = createLandlord(personL.getName(), personL.getCpf(), personL.getTelephone(),
-					personL.getEmail(), personL.getWallet(), personL.getPositions());
+			Person personL = new Person(name, cpf, email, wallet, positions);
+			Landlord landlord = createLandlord(personL.getName(), personL.getCpf(), personL.getEmail(),
+					personL.getWallet(), personL.getPositions());
 
 			if (landlord != null) {
 				personDAO.saveLandlord(landlord);
@@ -46,15 +45,13 @@ public class PersonService {
 		case TENANT:
 			if (cpf.length() != 11) {
 				throw new TenantException("Erro: " + EnumTenantException.TenantInvalidCPF);
-			} else if (telephone.length() != 9 && telephone.length() != 11) {
-				throw new TenantException("Erro: " + EnumTenantException.TenantInvalidTelephone);
 			} else if (wallet < 0) {
 				throw new TenantException("Erro: " + EnumTenantException.TenantInvalidBalance);
 			}
 
-			Person personT = new Person(name, cpf, telephone, email, wallet, positions);
-			Tenant tenant = createTenant(personT.getName(), personT.getCpf(), personT.getTelephone(),
-					personT.getEmail(), personT.getWallet(), personT.getPositions());
+			Person personT = new Person(name, cpf, email, wallet, positions);
+			Tenant tenant = createTenant(personT.getName(), personT.getCpf(), personT.getEmail(), personT.getWallet(),
+					personT.getPositions());
 
 			if (tenant != null) {
 				personDAO.saveTenant(tenant);
@@ -69,16 +66,14 @@ public class PersonService {
 	}
 
 	// CREATE LANDLORD AND TENANT
-	public Landlord createLandlord(String name, String cpf, String telephone, String email, double wallet,
-			PersonsPosition positions) throws LandlordException, TenantException {
-		return new Landlord(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email, wallet,
-				PersonsPosition.LANDLORD);
+	public Landlord createLandlord(String name, String cpf, String email, double wallet, PersonsPosition positions)
+			throws LandlordException, TenantException {
+		return new Landlord(nameFormart(name), cpfFormart(cpf), email, wallet, PersonsPosition.LANDLORD);
 	}
 
-	public Tenant createTenant(String name, String cpf, String telephone, String email, double wallet,
-			PersonsPosition positions) throws TenantException {
-		return new Tenant(nameFormart(name), cpfFormart(cpf), telephoneFormat(telephone), email, wallet,
-				positions);
+	public Tenant createTenant(String name, String cpf, String email, double wallet, PersonsPosition positions)
+			throws TenantException {
+		return new Tenant(nameFormart(name), cpfFormart(cpf), email, wallet, PersonsPosition.TENANT);
 	}
 
 	// FORMART AND VALIDATE
@@ -115,37 +110,6 @@ public class PersonService {
 		}
 	}
 
-	private String telephoneFormat(String telephone) throws TenantException {
-		if (telephone == null || telephone.isEmpty()) {
-			throw new TenantException("Erro: " + EnumTenantException.TenantInvalidTelephone);
-		}
-
-		telephone = telephone.replaceAll("[^0-9]", "");
-
-		if (telephone.startsWith("55") && telephone.length() > 11) {
-			telephone = telephone.substring(2);
-		}
-
-		switch (telephone.length()) {
-		case 9:
-			return String.format("%s-%s", telephone.substring(0, 5), telephone.substring(5, 9));
-		case 10:
-			return String.format("(%s) %s-%s", telephone.substring(0, 2), telephone.substring(2, 6),
-					telephone.substring(6, 10));
-		case 11:
-			return String.format("(%s) %s-%s", telephone.substring(0, 2), telephone.substring(2, 7),
-					telephone.substring(7, 11));
-		case 12:
-			return String.format("+%s (%s) %s-%s", telephone.substring(0, 2), telephone.substring(2, 4),
-					telephone.substring(4, 8), telephone.substring(8, 12));
-		case 13:
-			return String.format("+%s (%s) %s-%s", telephone.substring(0, 2), telephone.substring(2, 4),
-					telephone.substring(4, 9), telephone.substring(9, 13));
-		default:
-			throw new TenantException("Erro: " + EnumTenantException.TenantInvalidTelephone);
-		}
-	}
-
 	private String walletFormat(double wallet) {
 		DecimalFormat df = new DecimalFormat("###,###.00");
 		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
@@ -159,13 +123,13 @@ public class PersonService {
 	public void removeLandlord(int id) {
 		personDAO.deleteLandlordByID(id);
 	}
-	
+
 	public void removeTenant(int id) {
 		personDAO.deleteTenantByID(id);
 	}
 
 	// LIST LANDLORD AND TENANT
-	public void listLandlord() throws SQLException {
+	public void listLandlord() throws Exception {
 		if (personDAO.getLandlords().isEmpty()) {
 			System.out.println(("Erro: " + EnumLandlordException.LandlordNoRegistered));
 		} else {
@@ -173,13 +137,13 @@ public class PersonService {
 				System.out.print("\nID Proprietário: " + l.getId() + "\n");
 				System.out.print(" | Nome: " + l.getName());
 				System.out.print(" | CPF: " + l.getCpf());
-				System.out.print("\n | Telefone: " + l.getTelephone());
+				telephoneService.list();
 				System.out.print(" | Email: " + l.getEmail() + " |\n");
 			}
 		}
 	}
 
-	public void listTenant() throws SQLException {
+	public void listTenant() throws Exception {
 		if (personDAO.getTenants().isEmpty()) {
 			System.out.println(("Erro: " + EnumTenantException.TenantNoRegistered));
 		} else {
@@ -188,7 +152,7 @@ public class PersonService {
 				System.out.print(" | Nome: " + t.getName());
 				System.out.print(" | CPF: " + t.getCpf());
 				System.out.print(" | Carteira: " + walletFormat(t.getWallet()));
-				System.out.print("\n | Telefone: " + t.getTelephone());
+				telephoneService.list();
 				System.out.print(" | Email: " + t.getEmail() + " |\n");
 			}
 		}
@@ -220,12 +184,7 @@ public class PersonService {
 				personDAO.updateLandlordName(landlord);
 				break;
 			case 2:
-				System.out.print("Novo Telefone: ");
-				String newTelephone = scanner.nextLine();
-				landlord.setTelephone(telephoneFormat(newTelephone));
-				landlord.setId(id);
-				personDAO.updateLandlordTelephone(landlord);
-				break;
+				telephoneService.change(id);
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();
@@ -266,12 +225,7 @@ public class PersonService {
 				personDAO.updateTenantName(tenant);
 				break;
 			case 2:
-				System.out.print("Novo Telefone: ");
-				String newTelephone = scanner.nextLine();
-				tenant.setTelephone(telephoneFormat(newTelephone));
-				tenant.setId(id);
-				personDAO.updateLandlordTelephone(null);
-				break;
+				telephoneService.change(id);
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();

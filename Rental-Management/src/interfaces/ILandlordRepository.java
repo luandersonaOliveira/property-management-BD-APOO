@@ -13,8 +13,6 @@ public interface ILandlordRepository {
 
 	public void updateName(Landlord landlord);
 
-	public void updateTelephone(Landlord landlord);
-
 	public void updateEmail(Landlord landlord);
 
 	public void deleteByID(int id);

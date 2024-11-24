@@ -19,7 +19,7 @@ public class LeaseRepository implements ILeaseRepository {
 
 	@Override
 	public void save(Lease lease) {
-		String sql = "INSERT INTO lease (start_date, end_date, id_property, cpf_landlord, cpf_tenant) VALUES (?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO lease () VALUES (?, ?, ?, ?, ?)";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
