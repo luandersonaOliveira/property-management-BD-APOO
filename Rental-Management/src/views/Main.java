@@ -2,13 +2,13 @@ package views;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import entity.Landlord;
 import entity.Lease;
 import entity.Person;
 import entity.Property;
-import entity.Telephone;
 import entity.Tenant;
 import enums.PersonsPosition;
 import enums.PropertyOccupation;
@@ -22,7 +22,6 @@ import exceptions.TenantException;
 import services.LeaseService;
 import services.PersonService;
 import services.PropertyService;
-import services.TelephoneService;
 
 public class Main {
 	// ATTRIBUTES
@@ -32,7 +31,6 @@ public class Main {
 	private static PersonService personService = new PersonService();
 	private static PropertyService propertyService = new PropertyService();
 	private static LeaseService leaseService = new LeaseService();
-	private static TelephoneService telephoneService = new TelephoneService();
 
 	// CUSTOM METHODS
 
@@ -165,7 +163,6 @@ public class Main {
 			System.out.println("| 1.Para Cadastrar Imoveis aos Proprietários.");
 			System.out.println("| 2.Para Checar Imoveis.");
 			System.out.println("| 3.Para Editar Imoveis.");
-			System.out.println("| 4.Para Adicionar lista de Imoveis pronta.");
 			System.out.println("---------------------------------------------");
 			System.out.print("\n| Opção: ");
 			int option = scanner.nextInt();
@@ -179,9 +176,6 @@ public class Main {
 				break;
 			case 3:
 				changeProperty();
-				break;
-			case 4:
-				listProperties();
 				break;
 			case 0:
 				exit = true;
@@ -221,42 +215,11 @@ public class Main {
 			}
 		} while (!exit);
 	}
-	
-	// MENU PAYMENT
-	private static void menuPayment() throws Exception {
-		boolean exit = false;
-		do {
-			System.out.println("\n--------------------------");
-			System.out.println("| Menu Pagamento: ");
-			System.out.println("--------------------------");
-			System.out.println("| 0.Nenhum.");
-			System.out.println("| 1.Para Criar .");
-			System.out.println("| 2.Para Checar .");
-			System.out.println("| 3.Para Editar .");
-			System.out.println("--------------------------");
-			System.out.print("\n| Opção: ");
-			int option = scanner.nextInt();
-			scanner.nextLine();
-			switch (option) {
-			case 1:
-				
-				break;
-			case 2:
-				
-				break;
-			case 3:
-				
-				break;
-			case 0:
-				exit = true;
-				break;
-			}
-		} while (!exit);
-	}
 
 	// CREATE TENANTS
-	private static void createTenants() throws TenantException, LandlordException, PropertyException {
+	private static void createTenants() throws TenantException, LandlordException, PropertyException, SQLException {
 		try {
+
 			System.out.print("\nNome: ");
 			String name = scanner.nextLine();
 			System.out.print("CPF: ");
@@ -268,50 +231,46 @@ public class Main {
 
 			Person person = new Person(name, cpf, email, wallet, PersonsPosition.TENANT);
 
-			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
-					person.getPositions());
-			
+			System.out.println("Quantos telefones?");
+			int qntTelefones = scanner.nextInt();
 			scanner.nextLine();
-			if(person != null) {
-				System.out.print("\nPrimeiro Telefone: ");
-				String telephone1 = scanner.nextLine();
-				
-				System.out.print("Segundo Telefone: ");
-				String telephone2 = scanner.nextLine();
-				
-				Telephone telephone = new Telephone(telephone1, telephone2, person);
-				telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());				
+			for (int i = 0; i < qntTelefones; i++) {
+				System.out.println("Qual o telefone?");
+				String telephones = scanner.nextLine();
+				person.addTelephone(telephones);
 			}
 			
-
+			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
+					person.getPositions());
 		} catch (TenantException e) {
 			System.out.println("\n" + e.getMessage());
 		}
 	}
 
 	// CREATE LANDLORD
-	private static void createLandlord() throws TenantException, PropertyException {
+	private static void createLandlord() throws TenantException, PropertyException, SQLException {
 		try {
+
 			System.out.print("\nNome: ");
 			String name = scanner.nextLine();
 			System.out.print("CPF: ");
 			String cpf = scanner.nextLine();
-			System.out.print("Telefone: ");
-			System.out.print("Primeiro Telefone: ");
-			String telephone3 = scanner.nextLine();
-			System.out.print("Segundo Telefone: ");
-			String telephone4 = scanner.nextLine();
 			System.out.print("Email: ");
 			String email = scanner.nextLine();
 
 			Person person = new Person(name, cpf, email, 0, PersonsPosition.LANDLORD);
-			Telephone telephone = new Telephone(telephone3, telephone4, person);
+
+			System.out.println("Quantos telefones?");
+			int qntTelefones = scanner.nextInt();
+			scanner.nextLine();
+			for (int i = 0; i < qntTelefones; i++) {
+				System.out.println("Qual o telefone?");
+				String telephones = scanner.nextLine();
+				person.addTelephone(telephones);
+			}
 
 			personService.add(person.getName(), person.getCpf(), person.getEmail(), person.getWallet(),
 					person.getPositions());
-
-			telephoneService.add(telephone.getFirstTelephone(), telephone.getSecondTelephone(), telephone.getPerson());
-
 		} catch (LandlordException e) {
 			System.out.println("\n" + e.getMessage());
 		}
@@ -470,9 +429,20 @@ public class Main {
 
 	// CHANGE PROPERTY
 	private static void changeProperty() throws PropertyException, SQLException {
-		System.out.print("\nInsira o ID do Imóvel à editar: ");
-		int id = scanner.nextInt();
-		propertyService.change(id);
+		System.out.print("\n Tipo do imovel: 1.Residencial | 2.Comercial |");
+		System.out.print("\n| Opção: ");
+		int type = scanner.nextInt();
+		if(type == 1) {
+			System.out.print("\nInsira o ID do Imóvel à editar: ");
+			int idR = scanner.nextInt();
+			propertyService.changeResidential(idR);
+		}else if(type == 2) {
+			System.out.print("\nInsira o ID do Imóvel à editar: ");
+			int idC = scanner.nextInt();
+			propertyService.changeCommercial(idC);
+		}else {
+			System.out.println("Erro!");
+		}
 	}
 
 	// CHANGE LEASE
@@ -530,9 +500,20 @@ public class Main {
 	}
 
 	private static void removePropertys() {
-		System.out.print("\nInsira o ID do Imóvel para remover: ");
-		int id = scanner.nextInt();
-		propertyService.remove(id);
+		System.out.print("\n Tipo do imovel: 1.Residencial | 2.Comercial |");
+		System.out.print("\n| Opção: ");
+		int type = scanner.nextInt();
+		if(type == 1) {
+			System.out.print("\nInsira o ID do Imóvel à remover: ");
+			int idR = scanner.nextInt();
+			propertyService.removeResidential(idR);
+		}else if(type == 2) {
+			System.out.print("\nInsira o ID do Imóvel à remover: ");
+			int idC = scanner.nextInt();
+			propertyService.removeCommercial(idC);
+		}else {
+			System.out.println("Erro!");
+		}
 	}
 
 	private static void deleteLeases() {
@@ -546,95 +527,5 @@ public class Main {
 		System.out.print("\nInsira o ID do Proprietário: ");
 		int id = scanner.nextInt();
 		propertyService.listPropertyByLandlordId(id);
-	}
-
-	// LIST LANDLORDS AND PROPERTY
-	private static void listProperties() throws SQLException, Exception {
-
-		// LANDLORD ADD
-		Person ps1 = new Person("Liang", "74678506039", "Liang@gmail.com.br", 0, PersonsPosition.LANDLORD);
-
-		Telephone tp1 = new Telephone("86986012358", "85321068968", ps1);
-
-		Person ps2 = new Person("Ravi", "89867001826", "Ravi@gmail.com.br", 0, PersonsPosition.LANDLORD);
-
-		Telephone tp2 = new Telephone("62989335737", "73753398926", ps2);
-
-		Person ps3 = new Person("Elli", "21422187926", "Elli@gmail.com.br", 0, PersonsPosition.LANDLORD);
-
-		Telephone tp3 = new Telephone("63998845787", "78754889936", ps3);
-
-		Person ps4 = new Person("Norabel", "38766718686", "Norabel@gmail.com.br", 0, PersonsPosition.LANDLORD);
-
-		Telephone tp4 = new Telephone("92999042606", "60624099929", ps4);
-
-		Person ps5 = new Person("YuYan", "94614156487", "YuYan@gmail.com.br", 0, PersonsPosition.LANDLORD);
-
-		Telephone tp5 = new Telephone("62991046653", "35664019926", ps5);
-
-		// LANDLORD SERVICE ADD
-		personService.add(ps1.getName(), ps1.getCpf(), ps1.getEmail(), ps1.getWallet(), PersonsPosition.LANDLORD);
-
-		personService.add(ps2.getName(), ps2.getCpf(), ps2.getEmail(), ps2.getWallet(), PersonsPosition.LANDLORD);
-
-		personService.add(ps3.getName(), ps3.getCpf(), ps3.getEmail(), ps3.getWallet(), PersonsPosition.LANDLORD);
-
-		personService.add(ps4.getName(), ps4.getCpf(), ps4.getEmail(), ps4.getWallet(), PersonsPosition.LANDLORD);
-
-		personService.add(ps5.getName(), ps5.getCpf(), ps5.getEmail(), ps5.getWallet(), PersonsPosition.LANDLORD);
-
-		// TELEPHONE SERVICE ADD
-		telephoneService.add(tp1.getFirstTelephone(), tp1.getSecondTelephone(), tp1.getPerson());
-		telephoneService.add(tp2.getFirstTelephone(), tp2.getSecondTelephone(), tp2.getPerson());
-		telephoneService.add(tp3.getFirstTelephone(), tp3.getSecondTelephone(), tp3.getPerson());
-		telephoneService.add(tp4.getFirstTelephone(), tp4.getSecondTelephone(), tp4.getPerson());
-		telephoneService.add(tp5.getFirstTelephone(), tp5.getSecondTelephone(), tp5.getPerson());
-
-		// LANDLORD SERVICE SEARCH
-		Landlord l1 = personService.searchLandlord(1);
-		Landlord l2 = personService.searchLandlord(2);
-		Landlord l3 = personService.searchLandlord(3);
-		Landlord l4 = personService.searchLandlord(4);
-		Landlord l5 = personService.searchLandlord(5);
-
-		// PROPERTY ADD
-		Property pr1 = new Property("Rua Gonçalo de Carvalho (RS)", 1000, PropertyType.RESIDENTIAL,
-				PropertyOccupation.OCCUPIED, 3, true);
-
-		Property pr2 = new Property("Rua do Mucugê (BA)", 1200, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED,
-				5, TheTypeOfBusiness.AUTOMOTIVESERVICES);
-
-		Property pr3 = new Property("Rua do Mucugê (BA)", 1200, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED,
-				2, false);
-
-		Property pr4 = new Property("Rua da Aurora (PE)", 1800, PropertyType.COMMERCIAL, PropertyOccupation.UNOCCUPIED,
-				10, TheTypeOfBusiness.EDUCATION);
-
-		Property pr5 = new Property("Rua Bento Gonçalves (RS)", 2000, PropertyType.RESIDENTIAL,
-				PropertyOccupation.UNOCCUPIED, 8, true);
-
-		// PROPERTY SERVICE
-		propertyService.add(l1, pr1.getAddress(), pr1.getRentalValue(), pr1.getType(), pr1.getOccupation(),
-				pr1.getNumberOfRooms(), null, pr1.isTheLeisureArea());
-
-		propertyService.add(l2, pr2.getAddress(), pr2.getRentalValue(), pr2.getType(), pr2.getOccupation(),
-				pr2.getNumberOfRooms(), pr2.getBusiness(), false);
-
-		propertyService.add(l3, pr3.getAddress(), pr3.getRentalValue(), pr3.getType(), pr3.getOccupation(),
-				pr3.getNumberOfRooms(), null, pr3.isTheLeisureArea());
-
-		propertyService.add(l4, pr4.getAddress(), pr4.getRentalValue(), pr4.getType(), pr4.getOccupation(),
-				pr4.getNumberOfRooms(), pr4.getBusiness(), false);
-
-		propertyService.add(l5, pr5.getAddress(), pr5.getRentalValue(), pr5.getType(), pr5.getOccupation(),
-				pr5.getNumberOfRooms(), null, pr5.isTheLeisureArea());
-
-		// ASSIGN PROPERTY TO LANDLORD
-		leaseService.assignPropertyToLandlord(l1, pr1);
-		leaseService.assignPropertyToLandlord(l2, pr2);
-		leaseService.assignPropertyToLandlord(l3, pr3);
-		leaseService.assignPropertyToLandlord(l4, pr4);
-		leaseService.assignPropertyToLandlord(l5, pr5);
-
 	}
 }

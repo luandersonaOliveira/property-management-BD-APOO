@@ -3,6 +3,7 @@ package services;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import containers.PersonRepository;
@@ -20,12 +21,11 @@ public class PersonService {
 
 	private static final Scanner scanner = new Scanner(System.in);
 	private static final PersonRepository personDAO = new PersonRepository();
-	private static TelephoneService telephoneService = new TelephoneService();
 
 	// ADD LANDLORD AND TENANT
 
 	public void add(String name, String cpf, String email, double wallet, PersonsPosition positions)
-			throws TenantException, LandlordException {
+			throws TenantException, LandlordException, SQLException {
 		switch (positions) {
 		case LANDLORD:
 			if (cpf.length() != 11) {
@@ -137,7 +137,7 @@ public class PersonService {
 				System.out.print("\nID Proprietário: " + l.getId() + "\n");
 				System.out.print(" | Nome: " + l.getName());
 				System.out.print(" | CPF: " + l.getCpf());
-				telephoneService.list();
+				System.out.print(" | Telefone: " + l.getTelephone());
 				System.out.print(" | Email: " + l.getEmail() + " |\n");
 			}
 		}
@@ -151,8 +151,8 @@ public class PersonService {
 				System.out.print("\nID Inquilino: " + t.getId() + "\n");
 				System.out.print(" | Nome: " + t.getName());
 				System.out.print(" | CPF: " + t.getCpf());
+				System.out.print(" | Telefone: " + t.getTelephone());
 				System.out.print(" | Carteira: " + walletFormat(t.getWallet()));
-				telephoneService.list();
 				System.out.print(" | Email: " + t.getEmail() + " |\n");
 			}
 		}
@@ -170,7 +170,7 @@ public class PersonService {
 			Landlord landlord = new Landlord();
 
 			System.out.println(
-					"\nQuais as novas informações do Proprietário deseja mudar? \n| 0.Nenhum | 1.Nome | 2.Telefone | 3.Email |");
+					"\nQuais as novas informações do Proprietário deseja mudar? \n| 0.Nenhum | 1.Nome | 2.Telefones | 3.Email |");
 			System.out.print("\n| Opção: ");
 
 			int option = scanner.nextInt();
@@ -184,7 +184,11 @@ public class PersonService {
 				personDAO.updateLandlordName(landlord);
 				break;
 			case 2:
-				telephoneService.change(id);
+				System.out.print("Novo telefone: ");
+				String newTelephone = scanner.nextLine();
+				ArrayList<String> telephones = null;
+				telephones.set(0, newTelephone);
+				landlord.setTelephone(telephones);
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();
@@ -225,7 +229,11 @@ public class PersonService {
 				personDAO.updateTenantName(tenant);
 				break;
 			case 2:
-				telephoneService.change(id);
+				System.out.print("Novo telefone: ");
+				String newTelephone = scanner.nextLine();
+				ArrayList<String> telephones = null;
+				telephones.set(0, newTelephone);
+				tenant.setTelephone(telephones);
 			case 3:
 				System.out.print("Novo Email: ");
 				String newEmail = scanner.nextLine();

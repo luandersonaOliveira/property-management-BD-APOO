@@ -632,6 +632,72 @@ public class PropertyRepository {
 			}
 		}
 	}
+	
+	public List<Property> getProperty() throws SQLException {
+		String sql = "SELECT * FROM imovel";
+
+		List<Property> propertys = new ArrayList<Property>();
+
+		Connection conn = null;
+		PreparedStatement pstm = null;
+
+		// Classe que vai recuperar os dados no banco ****SELECT****
+		ResultSet rset = null;
+
+		try {
+			conn = PropertyConnections.createConnectionToMySQL();
+			pstm = (PreparedStatement) conn.prepareStatement(sql);
+			rset = pstm.executeQuery();
+			while (rset.next()) {
+				Property property = new Property();
+
+				// Recuperar o id
+				property.setId(rset.getInt("id"));
+
+				// Recuperar o endereço
+				property.setAddress(rset.getString("address"));
+
+				// Recuperar o valor do aluguel
+				property.setRentalValue(rset.getDouble("rental_value"));
+
+				// Recuperar o tipo
+				PropertyType propertyType = PropertyType.valueOf(rset.getString("type").toUpperCase());
+				property.setType(propertyType);
+
+				// Recuperar a ocupação
+				PropertyOccupation propertyOccupation = PropertyOccupation
+						.valueOf(rset.getString("occupation").toUpperCase());
+				property.setOccupation(propertyOccupation);
+
+				// Recuperar o cpf_Landlord e associar ao Landlord
+				Landlord landlord = new Landlord();
+				landlord.setCpf(rset.getString("cpfProprietario"));
+				property.setLandlord(landlord);
+
+				propertys.add(property);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rset != null) {
+					rset.close();
+				}
+
+				if (pstm != null) {
+					pstm.close();
+				}
+
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		return propertys;
+	}
 
 	public List<PropertyCommercial> getPropertyCommercial() throws SQLException {
 		String sql = "SELECT * FROM imovel_comercial";

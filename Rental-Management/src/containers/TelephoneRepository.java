@@ -15,7 +15,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
 	public void save(Telephone telephone) {
-		String sql = "INSERT INTO telefone_pessoa (idpessoa, primeiro_telefone, segundo_telefone) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO telefone_pessoa (cpf_pessoa, telefone) VALUES (?, ?)";
 		// person and landlord
 
 		Connection conn = null;
@@ -28,7 +28,7 @@ public class TelephoneRepository implements ITelephoneRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores que são esperados pela query
-			pstm.setInt(1, telephone.getPerson().getId());
+			pstm.setString(1, telephone.getPerson().getCpf());
 			pstm.setString(2, telephone.getFirstTelephone());
 			pstm.setString(3, telephone.getSecondTelephone());
 
@@ -265,7 +265,6 @@ public class TelephoneRepository implements ITelephoneRepository {
 
 			if (rset.next()) {
 				telephone = new Telephone();
-				telephone.setId(rset.getInt("idpessoa"));
 				telephone.setFirstTelephone(rset.getString("primeiro_telefone"));
 				telephone.setSecondTelephone(rset.getString("segundo_telefone"));
 			}

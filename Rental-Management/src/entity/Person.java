@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.ArrayList;
+
 import enums.PersonsPosition;
 
 public class Person {
@@ -8,6 +10,7 @@ public class Person {
 	private int id;
 	private String name, cpf, email;
 	private double wallet;
+	private ArrayList<String> telephone;
 	private PersonsPosition positions;
 
 	// CONSTRUCTOR
@@ -16,12 +19,13 @@ public class Person {
 
 	}
 
-	public Person(String name, String cpf, String email, double wallet,PersonsPosition positions) {
+	public Person(String name, String cpf,  String email, double wallet, PersonsPosition positions) {
 		this.name = name;
 		this.cpf = cpf;
 		this.email = email;
 		this.wallet = (wallet);
 		this.positions = positions;
+		 this.telephone = new ArrayList<>();
 	}
 
 	// SPECIAL METHODS
@@ -57,6 +61,14 @@ public class Person {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public ArrayList<String> getTelephone() {
+		return telephone;
+	}
+
+	public void addTelephone(String telephone) {
+        this.telephone.add(telephone);
+    }
 
 	public double getWallet() {
 		return wallet;
