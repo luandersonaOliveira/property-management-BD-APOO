@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connection.PropertyConnections;
-import entity.Telephone;
+import entity.Person;
 import interfaces.ITelephoneRepository;
 
 public class TelephoneRepository implements ITelephoneRepository {
 
 	@Override
-	public void save(Telephone telephone) {
+	public void save(Person person) {
 		String sql = "INSERT INTO telefone_pessoa (cpf_pessoa, telefone) VALUES (?, ?)";
 		// person and landlord
 
@@ -28,9 +28,8 @@ public class TelephoneRepository implements ITelephoneRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores que são esperados pela query
-			pstm.setString(1, telephone.getPerson().getCpf());
-			pstm.setString(2, telephone.getFirstTelephone());
-			pstm.setString(3, telephone.getSecondTelephone());
+			pstm.setString(1, person.getCpf());
+			pstm.setString(2, person.getTelephone().toString());
 
 			// Executar a query
 			pstm.execute();
@@ -54,9 +53,8 @@ public class TelephoneRepository implements ITelephoneRepository {
 	}
 
 	@Override
-	public void updateAll(Telephone telephone) {
-		String sql = "UPDATE telefone_pessoa SET primeiro_telefone = ?, segundo_telefone = ?"
-				+ "WHERE idtelefone_pessoa = ?";
+	public void updateTelephone(Person person) {
+		String sql = "UPDATE telefone_pessoa SET telefone = ? " + "WHERE idtelefone_pessoa = ?";
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -69,83 +67,8 @@ public class TelephoneRepository implements ITelephoneRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 
 			// Adicionar os valores para atualizar
-			pstm.setString(1, telephone.getFirstTelephone());
-			pstm.setString(2, telephone.getSecondTelephone());
-			pstm.setInt(3, telephone.getPerson().getId());
-
-			// Executar a query
-			pstm.execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateFirstTelephone(Telephone telephone) {
-		String sql = "UPDATE telefone_pessoa SET primeiro_telefone = ? " + "WHERE idtelefone_pessoa = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setString(1, telephone.getFirstTelephone());
-			pstm.setInt(2, telephone.getId());
-
-			// Executar a query
-			pstm.execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (pstm != null) {
-					pstm.close();
-				}
-
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	@Override
-	public void updateSecondTelephone(Telephone telephone) {
-		String sql = "UPDATE telefone_pessoa SET segundo_telefone = ? " + "WHERE idtelefone_pessoa = ?";
-
-		Connection conn = null;
-		PreparedStatement pstm = null;
-
-		try {
-			// Cria conexão com o banco
-			conn = PropertyConnections.createConnectionToMySQL();
-
-			// Criar a classe para executar a query
-			pstm = (PreparedStatement) conn.prepareStatement(sql);
-
-			// Adicionar os valores para atualizar
-			pstm.setString(1, telephone.getSecondTelephone());
-			pstm.setInt(2, telephone.getId());
+			pstm.setString(1, person.getTelephone().toString());
+			pstm.setInt(2, person.getId());
 
 			// Executar a query
 			pstm.execute();
@@ -199,10 +122,10 @@ public class TelephoneRepository implements ITelephoneRepository {
 	}
 
 	@Override
-	public List<Telephone> getTelephone() throws SQLException {
+	public List<Person> getTelephone() throws SQLException {
 		String sql = "SELECT * FROM telefone_pessoa";
 
-		List<Telephone> telephones = new ArrayList<Telephone>();
+		List<Person> persons = new ArrayList<Person>();
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -215,15 +138,12 @@ public class TelephoneRepository implements ITelephoneRepository {
 			pstm = (PreparedStatement) conn.prepareStatement(sql);
 			rset = pstm.executeQuery();
 			while (rset.next()) {
-				Telephone telephone = new Telephone();
+				Person person = new Person();
 
 				// Recuperar o primeiro telefone
-				telephone.setFirstTelephone("primeiro_telefone");
+				person.addTelephone("telefone");
 
-				// Recuperar o segundo telefone
-				telephone.setFirstTelephone("segundo_telefone");
-
-				telephones.add(telephone);
+				persons.add(person);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -245,13 +165,13 @@ public class TelephoneRepository implements ITelephoneRepository {
 			}
 
 		}
-		return telephones;
+		return persons;
 	}
 
 	@Override
-	public Telephone getTelephoneById(int id) throws SQLException {
+	public Person getTelephoneById(int id) throws SQLException {
 		String sql = "SELECT * FROM telefone_pessoa WHERE idpessoa = ?";
-		Telephone telephone = null;
+		Person person = null;
 
 		Connection conn = null;
 		PreparedStatement pstm = null;
@@ -264,9 +184,8 @@ public class TelephoneRepository implements ITelephoneRepository {
 			rset = pstm.executeQuery();
 
 			if (rset.next()) {
-				telephone = new Telephone();
-				telephone.setFirstTelephone(rset.getString("primeiro_telefone"));
-				telephone.setSecondTelephone(rset.getString("segundo_telefone"));
+				person = new Person();
+				person.addTelephone(rset.getString("telefone"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -286,6 +205,6 @@ public class TelephoneRepository implements ITelephoneRepository {
 			}
 		}
 
-		return telephone;
+		return person;
 	}
 }

@@ -7,13 +7,9 @@ import entity.Person;
 
 public interface ITelephoneRepository {
 
-	public void save(Person telephone);
+	public void save(Person person);
 
-	public void updateAll(Person telephone);
-
-	public void updateFirstTelephone(Person telephone);
-
-	public void updateSecondTelephone(Person telephone);
+	public void updateTelephone(Person person);
 
 	public void deleteByID(int id);
 

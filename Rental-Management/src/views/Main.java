@@ -2,7 +2,6 @@ package views;
 
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import entity.Landlord;
